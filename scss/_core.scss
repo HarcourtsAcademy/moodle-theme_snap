@@ -1175,7 +1175,7 @@ header#page-header
 }
 
 /* FRONT PAGE ELEMENTS */
-#page-my-index {
+#page-my-index { // // START Academy Patch M#060-03
     #page-header,
     .carousel-slide {
         // background-color: $brand-primary; customisable
@@ -1184,7 +1184,7 @@ header#page-header
         padding: 0;
         margin: 0;
     }
-}
+} // END Academy Patch M#060-03
 #page-site-index {
     #region-main {
         max-width: 100%;

@@ -54,10 +54,10 @@ $carousel = false;
 if ($PAGE->pagetype === 'site-index' && !empty($PAGE->theme->settings->cover_carousel)) {
     // Output is html from template, but can be empty if no slides.
     $carousel = $OUTPUT->cover_carousel();
-} else if ($PAGE->pagetype === 'my-index' && !empty($PAGE->theme->settings->cover_carousel)) {
+} else if ($PAGE->pagetype === 'my-index' && !empty($PAGE->theme->settings->cover_carousel)) { // START Academy Patch M#060-03
     // Output is html from template, but can be empty if no slides.
     $carousel = $OUTPUT->cover_carousel();
-}
+} // END Academy Patch M#060-03
 // Cover images for the site, catagory or course.
 $coverimagecss = '';
 if ($PAGE->context->contextlevel === CONTEXT_COURSECAT) {
