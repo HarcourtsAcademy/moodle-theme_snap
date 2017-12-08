@@ -206,7 +206,7 @@ $THEME->blockrtlmanipulations = array(
 );
 
 if ($themeissnap && $notajaxscript) {
-    if (empty($CFG->snappageinit) && !empty($PAGE)) {
+    if (empty($CFG->snappageinit) && !empty($PAGE->context)) { // Academy Patch M#060-01
         $CFG->snappageinit = true;
         $PAGE->initialise_theme_and_output();
 
