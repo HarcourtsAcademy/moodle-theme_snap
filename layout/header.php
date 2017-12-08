@@ -54,6 +54,9 @@ $carousel = false;
 if ($PAGE->pagetype === 'site-index' && !empty($PAGE->theme->settings->cover_carousel)) {
     // Output is html from template, but can be empty if no slides.
     $carousel = $OUTPUT->cover_carousel();
+} else if ($PAGE->pagetype === 'my-index' && !empty($PAGE->theme->settings->cover_carousel)) {
+    // Output is html from template, but can be empty if no slides.
+    $carousel = $OUTPUT->cover_carousel();
 }
 // Cover images for the site, catagory or course.
 $coverimagecss = '';
