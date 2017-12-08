@@ -222,13 +222,13 @@ a {
 }
 
 ::-moz-selection {
-    background: $brand-primary;
+    background: $brand-primary; // Academy Patch M#060-04
     color: #fff;
     text-shadow: none;
 }
 
 ::selection {
-    background: $brand-primary;
+    background: $brand-primary; // Academy Patch M#060-04
     color: #fff;
     text-shadow: none;
 }
