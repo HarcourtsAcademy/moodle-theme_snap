@@ -116,7 +116,10 @@ table.boxwidthwide {
         margin: 2em auto;
         max-width: 30rem;
         width: 100%;
-        background-color: rgba(255,255,255,0.9);
+        background-color: rgba(0,0,0,0.4); // Start Acadmey Patch M#060-05
+        h5 {
+            color: white;
+        } // End Acadmey Patch M#060-05
     }
     // The site name.
     .snap-logo-sitename {
