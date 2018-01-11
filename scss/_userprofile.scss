@@ -162,3 +162,13 @@
         }
     }
 }
+
+/* START Academy Patch M#055 MNet users can manage custom profile fields. */
+#page-user-edit {
+    #region-main {
+        h2 {
+            display: none;
+        }
+    }
+}
+/* END Academy Patch M#055. */
