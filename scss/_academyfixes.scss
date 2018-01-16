@@ -1,0 +1,7 @@
+/* Fixes */
+
+/* Add space next to large font awesome icons in bootstrap alerts */
+i.pull-left {
+    /* Can't include .fa class otherwise extra css is added automatically. */
+    margin-right: .3em;
+}
