@@ -623,10 +623,13 @@ class core_renderer extends \theme_boost\output\core_renderer {
             'link' => s($CFG->wwwroot).'/login/logout.php?sesskey='.sesskey(),
             'title' => get_string('logout')
         ];
-        $quicklinks = [$profilelink, $preferenceslink, $gradelink, $logoutlink];
-
         /* START Academy Patch M#060 Customise Moodlerooms Snap theme.
-         * Include user profile information on the Personal Menu. */
+         * Include user profile information on the Personal Menu.
+
+         * $quicklinks = [$profilelink, $preferenceslink, $gradelink, $logoutlink];
+         *
+         */
+        $quicklinks = [$preferenceslink, $gradelink, $logoutlink];
 
         // Render custom blocks.
         $renderer = $PAGE->get_renderer('core_user', 'myprofile');
