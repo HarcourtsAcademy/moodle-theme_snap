@@ -46,6 +46,13 @@
 
         <!-- Content -->
         <div id="snap-pm-content" class="row">
+            <!-- START Academy Patch M#060 -->
+            <!-- User Profile -->
+            <section id="snap-pm-profile" class="col-lg-9">
+                <h2 class="sr-only">{{#str}}profile{{/str}}</h2>
+                {{{userprofile}}}
+            </section>
+            <!-- END Academy Patch M#060 -->
             <!-- Courses -->
             <section id="snap-pm-courses" class="col-lg-9">
                 <h2 class="sr-only">{{#str}}courses{{/str}}</h2>
@@ -93,7 +100,7 @@
                 {{/coursenav}}
 
                 {{{browseallcourses}}}
-            </section>
+        </section>
             <!-- Updates -->
             <div id="snap-pm-updates" class="col-lg-3">
                 {{#updates}}

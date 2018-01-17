@@ -1,0 +1,41 @@
+// -------------------------------
+//  Academy Personal menu content.
+// -------------------------------
+#snap-pm-content {
+    #snap-pm-profile {
+        overflow: hidden;
+
+        section.node_category {
+    /*        float: left;
+            width: 25%;
+            border: none;*/
+            display: inline-block;
+
+            ul {
+                margin: 0;
+                list-style: none;
+                padding-left: 0;
+                li {
+                    margin-top: 5px;
+                }
+            }
+        }
+
+        // Tablet and mobile display.
+        @include media-breakpoint-down(md) {
+            width: 700vw;
+
+            section {
+                width: 100vw !important;
+                float: left;
+                padding: 0 2em;
+                margin-bottom: 60px; // For the menu.
+                border-color: transparent !important;
+
+            }
+        }
+    }
+    #snap-pm-courses {
+        display: none; // TBD remove their HTML output completely.
+    }
+}
