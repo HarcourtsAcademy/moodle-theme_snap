@@ -743,7 +743,11 @@ class core_renderer extends \theme_boost\output\core_renderer {
             $userpicture->size = 100;
             $picture = $this->render($userpicture);
 
-            $menu = '<span class="hidden-xs-down">' .get_string('menu', 'theme_snap'). '</span>';
+            /* START Academy Patch M#060 Customise Moodlerooms Snap theme.
+             * Replace 'My Course' label next to header profile picture with user's full name.  */
+            // $menu = '<span class="hidden-xs-down">' .get_string('menu', 'theme_snap'). '</span>';
+            $menu = '<span class="hidden-xs-down">' .fullname($USER). '</span>';
+            /* END Academy Patch M#060 */
             $badge = $this->render_badge_count();
             $linkcontent = $picture.$menu.$badge;
             $attributes = array(
@@ -1621,7 +1625,7 @@ HTML;
      * Uses bootstrap compatible html.
      */
     public function navbar() {
-        global $COURSE, $CFG;
+        global $COURSE, $CFG, $USER;
 
         require_once($CFG->dirroot.'/course/lib.php');
 
