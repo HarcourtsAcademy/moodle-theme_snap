@@ -375,7 +375,11 @@ class core_renderer extends \theme_boost\output\core_renderer {
     protected function render_callstoaction() {
 
         $mobilemenu = '<div id="snap-pm-mobilemenu">';
-        $mobilemenu .= $this->mobile_menu_link('courses', 'courses', '#snap-pm-courses');
+        /* START Academy Patch M#060
+         * $mobilemenu .= $this->mobile_menu_link('courses', 'courses', '#snap-pm-courses');
+         */
+        $mobilemenu .= $this->mobile_menu_link('viewyourprofile', 'user', '#snap-pm-profile');
+        /* END Academy Patch M#060 */
         $deadlines = $this->render_deadlines();
         if (!empty($deadlines)) {
             $columns[] = $deadlines;
