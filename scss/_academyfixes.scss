@@ -12,3 +12,8 @@ i.pull-left {
         display: none;
     }
 }
+
+/* Hide the Snap login button from the header nav on the country login page. */
+#page-login-country_login .snap-login-button {
+    display: none;
+}

@@ -1,0 +1,78 @@
+.big-button-wrapper {
+    display: block;
+    float: left;
+    padding: 10px;
+}
+
+.big-button-wrapper a {
+    display: block;
+    width: 200px;
+    height: 132px;
+    overflow: hidden;
+    border: 1px solid #7e7e7e;
+}
+
+.big-button-wrapper a:link,
+.big-button-wrapper a:visited,
+.big-button-wrapper a:hover,
+.big-button-wrapper a:active {
+    color: #fff;
+    text-decoration: none;
+}
+
+.big-button-wrapper a:hover {
+    border-color: #00adef;
+}
+
+.big-button-wrapper a#australia {
+    background: url([[pix:theme|big-button-australia]]) no-repeat;
+}
+
+.big-button-wrapper a#new-zealand {
+    background: url([[pix:theme|big-button-new-zealand]]) no-repeat;
+}
+
+.big-button-wrapper a#residential-sales {
+    background: url([[pix:theme|big-button-residential-sales]]) no-repeat;
+}
+
+.big-button-wrapper a#residential-sales-registration-qld {
+    background: url([[pix:theme|big-button-residential-sales-registration-qld]]) no-repeat;
+}
+
+.big-button-wrapper a img {
+    vertical-align: text-bottom;
+}
+
+.big-button-text-overlay {
+    display: block;
+    /* Fallback for web browsers that doesn't support RGBa */
+    background: #7F7F7F;
+    /* RGBa with 0.5 opacity */
+    background: rgba(0, 0, 0, 0.5);
+    /* For IE 5.5 - 7*/
+    filter:progid:DXImageTransform.Microsoft.gradient(startColorstr=#77000000, endColorstr=#77000000);
+    /* For IE 8*/
+    -ms-filter: "progid:DXImageTransform.Microsoft.gradient(startColorstr=#77000000, endColorstr=#77000000)";
+    padding-left: 3px;
+    position: relative;
+    height: 100%;
+    top: -23%;
+    width: 198px;
+    @media (max-width: 767px) {
+        top: -18%;
+    }
+}
+
+
+
+.big-button-wrapper a:hover .big-button-text-overlay {
+    /* Fallback for web browsers that doesn't support RGBa */
+    background: rgb(0, 173, 239);
+    /* RGBa with 0.5 opacity */
+    background: rgba(0, 173, 239, 0.5);
+    /* For IE 5.5 - 7*/
+    filter:progid:DXImageTransform.Microsoft.gradient(startColorstr=#7700adef, endColorstr=#7700adef);
+    /* For IE 8*/
+    -ms-filter: "progid:DXImageTransform.Microsoft.gradient(startColorstr=#7700adef, endColorstr=#7700adef)";
+}
