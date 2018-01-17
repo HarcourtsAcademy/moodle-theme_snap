@@ -5,3 +5,10 @@ i.pull-left {
     /* Can't include .fa class otherwise extra css is added automatically. */
     margin-right: .3em;
 }
+
+/* Hide the links to other login providers (MNet) on the login page. */
+#page-login-index { 
+    h5, .potentialidplist {
+        display: none;
+    }
+}
