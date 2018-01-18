@@ -1638,6 +1638,25 @@ HTML;
         return $navoutput;
     }
 
+    /** START Academy Patch M#060
+     * Renders pop-up shopping cart
+     * @return string shopping cart popup area.
+     */
+    protected function render_shoppingcart_popups() {
+        global $OUTPUT, $USER;
+
+        $context = [
+            'userid' => $USER->id,
+            'urls' => [
+                'seeall' => (new moodle_url('/message/output/popup/notifications.php'))->out(),
+                'preferences' => (new moodle_url('/message/notificationpreferences.php', ['userid' => $USER->id]))->out(),
+            ],
+        ];
+        $navoutput = $OUTPUT->render_from_template('theme_snap/shoppingcart_popover', $context);
+        return $navoutput;
+    }
+    /* END Academy Patch M#060 */
+
     /**
      * This renders the navbar.
      * Uses bootstrap compatible html.

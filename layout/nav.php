@@ -40,6 +40,7 @@ if (class_exists('local_geniusws\navigation')) {
 
 echo $OUTPUT->personal_menu_trigger();
 echo $OUTPUT->render_notification_popups();
+echo $OUTPUT->render_shoppingcart_popups(); // Academy Patch M#060
 
 $settingslink = new settings_link();
 echo $OUTPUT->render($settingslink);

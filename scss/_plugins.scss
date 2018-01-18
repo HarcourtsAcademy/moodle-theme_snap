@@ -26,6 +26,7 @@
 /**
  * Core notifications (bell) and popover.
  */
+#nav-shoppingcart-popover-container, // Academy Patch M#060
 #nav-notification-popover-container {
     display: inline-block;
     float: none;
@@ -40,6 +41,19 @@
             content: "\f0a2";
         }
     }
+    // START Academy Patch M#060
+    // Shopping cart icon.
+    .icon.fa-shopping-cart {
+        font-size: 24px;
+        width: auto;
+        height: auto;
+        color: $nav-color;
+
+        &:before {
+            content: "\f07a";
+        }
+    }
+    // END Academy Patch M#060
     .popover-region-toggle {
         padding: 0.5em;
         // Hide arrow on the top of the popover.
