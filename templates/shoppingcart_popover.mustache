@@ -31,15 +31,21 @@
 
     Example context (json):
     {
+        "userfullname", "Lisa Learner"
+        "useremail": "lisa@learner.com",
+        "userphone": "1234 5678",
+        "useraddress": "1 Street Road",
+        "usercity": "Cityville",
+        "usercountry": "Countryland",
+        "userpostcode": "12345",
+        "currency": "CUR",
         "userid": 3,
-        "urls": {
-            "preferences": "http://www.moodle.com"
-        }
+        "publicapikey": "ABCDEFG",
     }
 
 }}
 {{< core/popover_region }}
-    {{$classes}}popover-region-shoppingcart block_snipcart{{/classes}}
+    {{$classes}}popover-region-shoppingcart{{/classes}}
     {{$attributes}}id="nav-shoppingcart-popover-container" data-userid="{{userid}}"{{/attributes}}
 
     {{$togglelabel}}{{#str}} showshoppingcart, theme_snap {{/str}}{{/togglelabel}}
@@ -52,18 +58,11 @@
 
     {{$headertext}}{{#str}} shoppingcart, theme_snap {{/str}}{{/headertext}}
     {{$headeractions}}
-        <a class="mark-all-read-button"
-           href="#"
-           title="{{#str}} markallread {{/str}}"
-           data-action="mark-all-read"
-           role="button">
-            <span class="normal-icon">{{#pix}} t/markasread, core, {{#str}} markallread {{/str}} {{/pix}}</span>
-            {{> core/loading }}
-        </a>
-        <a href="{{{urls.preferences}}}"
-           title="{{#str}} notificationpreferences, message {{/str}}">
-            {{#pix}} i/settings, core, {{#str}} notificationpreferences, message {{/str}} {{/pix}}
-        </a>
+        <div class="snipcart-payment-types">
+            <span class="snipcart-payment-type">{{#pix}} amex, block_snipcart, 'American Express accepted'{{/pix}}</span>
+            <span class="snipcart-payment-type">{{#pix}} master_card, block_snipcart, 'Master Card accepted'{{/pix}}</span>
+            <span class="snipcart-payment-type">{{#pix}} visa, block_snipcart, 'Visa accepted'{{/pix}}</span>
+        </div>
     {{/headeractions}}
 
     {{$content}}
@@ -74,28 +73,20 @@
                data-api-key="{{publicapikey}}">
         </script>
         <link type="text/css" href="https://cdn.snipcart.com/themes/base/snipcart.min.css" rel="stylesheet" />
-            <div class="snipcart-summary">
-                <div class="snipcart-items">
-                    <span class="snipcart-total-items-label">{{#str}} items, block_snipcart {{/str}}</span>
-                    <span class="snipcart-total-items"></span>
-                </div>
-                <div class="snipcart-price">
-                    <span class="snipcart-total-price-label">{{#str}} total, block_snipcart {{/str}}</span>
-                    <span class="snipcart-total-price"></span></div>
+        <div class="snipcart-summary">
+            <div class="snipcart-items">
+                <span class="snipcart-total-items-label">{{#str}} items, block_snipcart {{/str}}</span>
+                <span class="snipcart-total-items"></span> (<span class="snipcart-total-price"></span>)
             </div>
-            
-        <div class="snipcart-payment-types">
-            <span class="snipcart-payment-type">{{#pix}} amex, block_snipcart, 'American Express accepted'{{/pix}}</span>
-            <span class="snipcart-payment-type">{{#pix}} master_card, block_snipcart, 'Master Card accepted'{{/pix}}</span>
-            <span class="snipcart-payment-type">{{#pix}} visa, block_snipcart, 'Visa accepted'{{/pix}}</span>
         </div>
+
     {{/content}}
     {{$anchor}}
+        <div class="popover-region-footer-container">
         <a href="#" class="snipcart-checkout btn btn-small btn-success see-all-link">
-            <div class="popover-region-footer-container">
                 <div class="snipcart-actions faded">{{#pix}} t/backpack, core, {{#str}} showshoppingcart, theme_snap {{/str}} {{/pix}} {{#str}} checkout, block_snipcart {{/str}}</div>
-            </div>
         </a>
+        </div>
     {{/anchor}}
 {{/ core/popover_region }}
 {{#js}}

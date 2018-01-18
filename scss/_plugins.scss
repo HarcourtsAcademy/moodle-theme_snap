@@ -53,6 +53,17 @@
             content: "\f07a";
         }
     }
+    .snipcart-summary {
+        text-align: center;
+        .snipcart-total-items-label {
+            font-weight: bold;
+        }
+    }
+    a.snipcart-checkout,
+    a:hover.snipcart-checkout {
+        color: white;
+        margin: .5em;
+    }
     // END Academy Patch M#060
     .popover-region-toggle {
         padding: 0.5em;

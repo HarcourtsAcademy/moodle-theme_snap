@@ -1674,12 +1674,8 @@ HTML;
             'usercountry'   => $usercountry,
             'userpostcode'  => $userpostcode,
             'currency'      => $currency,
-            'userid' => $USER->id,
-            'publicapikey' => $publicapikey,
-            'urls' => [
-                'seeall' => (new moodle_url('/message/output/popup/notifications.php'))->out(),
-                'preferences' => (new moodle_url('/message/notificationpreferences.php', ['userid' => $USER->id]))->out(),
-            ],
+            'userid'        => $USER->id,
+            'publicapikey'  => $publicapikey,
         ];
         $navoutput = $OUTPUT->render_from_template('theme_snap/shoppingcart_popover', $context);
         return $navoutput;
