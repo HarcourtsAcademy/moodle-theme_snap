@@ -67,13 +67,30 @@
     {{/headeractions}}
 
     {{$content}}
-        <div class="all-notifications"
-            data-region="all-notifications"
-            role="log"
-            aria-busy="false"
-            aria-atomic="false"
-            aria-relevant="additions"></div>
-        <div class="empty-message" tabindex="0" data-region="empty-message">{{#str}} nonotifications, message {{/str}}</div>
+        <script type="text/javascript"
+               src="https://cdn.snipcart.com/scripts/snipcart.js"
+               id="snipcart"
+               data-autopop="false"
+               data-api-key="{{publicapikey}}">
+        </script>
+        <link type="text/css" href="https://cdn.snipcart.com/themes/base/snipcart.min.css" rel="stylesheet" />
+            <div class="snipcart-summary">
+                <div class="snipcart-items">
+                    <span class="snipcart-total-items-label">{{#str}} items, block_snipcart {{/str}}</span>
+                    <span class="snipcart-total-items"></span>
+                </div>
+                <div class="snipcart-price">
+                    <span class="snipcart-total-price-label">{{#str}} total, block_snipcart {{/str}}</span>
+                    <span class="snipcart-total-price"></span></div>
+            </div>
+            <div class="snipcart-actions faded">
+              <a href="#" class="snipcart-checkout btn btn-small btn-success">{{#pix}} t/backpack, core, {{#str}} showshoppingcart, theme_snap {{/str}} {{/pix}} {{#str}} checkout, block_snipcart {{/str}}</a>
+            </div>
+        <div class="snipcart-payment-types">
+            <span class="snipcart-payment-type">{{#pix}} amex, block_snipcart, 'American Express accepted'{{/pix}}</span>
+            <span class="snipcart-payment-type">{{#pix}} master_card, block_snipcart, 'Master Card accepted'{{/pix}}</span>
+            <span class="snipcart-payment-type">{{#pix}} visa, block_snipcart, 'Visa accepted'{{/pix}}</span>
+        </div>
     {{/content}}
 {{/ core/popover_region }}
 {{#js}}
@@ -82,5 +99,23 @@ require(['jquery', 'message_popup/notification_popover_controller'], function($,
     var controller = new controller(container);
     controller.registerEventListeners();
     controller.registerListNavigationEventListeners();
+});
+
+$(window).on("load", function() {
+    $(".snipcart-actions").addClass("fadein");
+
+    Snipcart.api.setCurrency("' . strtolower($currency) . '");
+
+    Snipcart.execute("setBillingAddress", {
+        email: "'.$useremail.'",
+        name: "'.$userfullname.'",
+        address1: "'.$useraddress.'",
+        address2: "",
+        country: "'.$usercountry.'",
+        province: "",
+        city: "'.$usercity.'",
+        phone: "'.$userphone.'",
+        postalCode: "'.$userpostcode.'"
+    });
 });
 {{/js}}

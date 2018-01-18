@@ -1643,10 +1643,38 @@ HTML;
      * @return string shopping cart popup area.
      */
     protected function render_shoppingcart_popups() {
-        global $OUTPUT, $USER;
+        global $DB, $OUTPUT, $USER;
+        
+        $plugin = enrol_get_plugin('snipcart');
+        if (empty($plugin)) {
+            return '';
+        }
+
+        $manager = \enrol_snipcart\get_snipcartaccounts_manager();
+        $currency = $plugin->get_currency_for_country($USER->country);
+        $publicapikey = $manager->get_snipcartaccount_info($currency, 'publicapikey');
+
+        $userfullname   = fullname($USER);
+        $useremail      = trim(preg_replace('/\s*\([^)]*\)/', '', $USER->email));
+        $userphone      = $USER->phone1;
+        $useraddress    = $USER->address;
+        $usercity       = $USER->city;
+        $usercountry    = $USER->country;
+
+        $postcodefieldid    = $DB->get_field('user_info_field', 'id', array( 'shortname' => 'postcode'));
+        $postcodefield      = $DB->get_record('user_info_data', array('userid' => $USER->id, 'fieldid' => $postcodefieldid));
+        $userpostcode       = (!empty($postcodefield)) ? $postcodefield->data : '';
 
         $context = [
+            'userfullname'  => $userfullname,
+            'useremail'     => $useremail,
+            'userphone'     => $userphone,
+            'useraddress'   => $useraddress,
+            'usercity'      => $usercity,
+            'usercountry'   => $usercountry,
+            'userpostcode'  => $userpostcode,
             'userid' => $USER->id,
+            'publicapikey' => $publicapikey,
             'urls' => [
                 'seeall' => (new moodle_url('/message/output/popup/notifications.php'))->out(),
                 'preferences' => (new moodle_url('/message/notificationpreferences.php', ['userid' => $USER->id]))->out(),
