@@ -17,3 +17,15 @@ i.pull-left {
 #page-login-country_login .snap-login-button {
     display: none;
 }
+
+/* Remove border rounding from first and last buttons in a group.
+ * Code taken from https://getbootstrap.com/docs/3.3/components/#btn-groups
+ */
+.btn-group > .btn:first-child:not(:last-child):not(.dropdown-toggle) {
+    border-top-right-radius: 0;
+    border-bottom-right-radius: 0;
+}
+.btn-group > .btn:last-child:not(:first-child), .btn-group > .dropdown-toggle:not(:first-child) {
+    border-top-left-radius: 0;
+    border-bottom-left-radius: 0;
+}

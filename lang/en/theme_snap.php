@@ -276,6 +276,7 @@ $string['twitterdesc'] = 'The url of your twitter account.';
 $string['unenrolme'] = 'Unenrol me';
 $string['unread'] = 'unread';
 $string['unsupportedcoverimagetype'] = 'Unsupported cover image type ({$a})';
+$string['upcoming'] = 'Upcoming';
 $string['via'] = 'via';
 $string['viewcourse'] = 'View Course';
 $string['viewyourprofile'] = 'View your profile';
