@@ -1673,6 +1673,7 @@ HTML;
             'usercity'      => $usercity,
             'usercountry'   => $usercountry,
             'userpostcode'  => $userpostcode,
+            'currency'      => $currency,
             'userid' => $USER->id,
             'publicapikey' => $publicapikey,
             'urls' => [
