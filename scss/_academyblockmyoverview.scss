@@ -1,0 +1,4 @@
+/* Hide the 'Course Overview' heading from the dashboard. */
+#page-my-index .block_myoverview h3 {
+    display: none;
+}
