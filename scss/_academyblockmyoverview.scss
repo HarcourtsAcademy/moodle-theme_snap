@@ -13,11 +13,19 @@
             .media {
                 background-color: rgba(0,0,0,.6);
                 padding: 1em;
-                height: 9rem;
+                min-height: 9rem;
             }
             .summary {
                 margin-bottom: 0;
                 color: #fefefe;
+            }
+            .hidden-sm-up {
+                .progress-chart-container {
+                    margin: auto;
+                }
+                h4 {
+                    text-align: center;
+                }
             }
         }
 
