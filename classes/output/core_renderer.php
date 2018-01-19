@@ -1643,10 +1643,17 @@ HTML;
      * @return string shopping cart popup area.
      */
     protected function render_shoppingcart_popups() {
-        global $DB, $OUTPUT, $USER;
+        global $CFG, $DB, $OUTPUT, $USER;
         
         $plugin = enrol_get_plugin('snipcart');
         if (empty($plugin)) {
+            return '';
+        }
+
+        // Logged in users only
+        if (!isloggedin() || isguestuser() || user_not_fully_set_up($USER) ||
+            get_user_preferences('auth_forcepasswordchange') ||
+            ($CFG->sitepolicy && !$USER->policyagreed && !is_siteadmin())) {
             return '';
         }
 
