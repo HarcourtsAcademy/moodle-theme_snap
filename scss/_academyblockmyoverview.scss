@@ -1,4 +1,124 @@
 /* Hide the 'Course Overview' heading from the dashboard. */
-#page-my-index .block_myoverview h3 {
-    display: none;
+#page-my-index {
+    .block_myoverview h3 {
+        display: none;
+    }
+    .courses-view-course-item {
+        background-color: #ddd;
+        height: auto;
+
+        .course-info-container {
+            padding: 0;
+
+            .media {
+                background-color: rgba(0,0,0,.6);
+                padding: 1em;
+                height: 9rem;
+            }
+            .summary {
+                margin-bottom: 0;
+                color: #fefefe;
+            }
+        }
+
+        .card-actions {
+            padding: .4em;
+        }
+        .card-badges {
+            padding: .8em;
+        }
+        .badge-pill {
+            padding-right: .6em;
+            padding-left: .6em;
+            padding-top: .1em;
+            border-radius: 10rem
+        }
+    }
+}
+
+
+
+$chart-size: 70px;
+$doughnut-border-size: 15px;
+$doughnut-dasharray: 173;
+$doughnut-empty-colour: #fefefe;
+$doughnut-fill-colour: $brand-info;
+
+.progress-chart-container {
+    height: $chart-size;
+    width: $chart-size;
+
+    .progress-doughnut {
+        position: relative;
+        height: $chart-size;
+        width: $chart-size;
+        background-clip: padding-box;
+        border: $doughnut-border-size solid $doughnut-empty-colour;
+        border-radius: 50%;
+        box-sizing: border-box;
+
+        .progress-text {
+            position: absolute;
+            top: 50%;
+            /*rtl:ignore*/
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: $doughnut-empty-colour;
+
+            &.has-percent {
+                color: $doughnut-fill-colour;
+            }
+        }
+
+        .progress-indicator {
+            position: absolute;
+            top: ($doughnut-border-size * -1);
+            left: ($doughnut-border-size * -1);
+            height: $chart-size;
+            width: $chart-size;
+
+            svg {
+                position: relative;
+                height: 100%;
+                width: 100%;
+
+                .circle {
+                    stroke-width: $doughnut-border-size;
+                    stroke: $doughnut-fill-colour;
+                    fill: none;
+                    stroke-dasharray: $doughnut-dasharray;
+                    stroke-dashoffset: $doughnut-dasharray;
+                    transform: rotate(-90deg);
+                    transform-origin: center center;
+
+                    @for $i from 1 through 100 {
+                        &.percent-#{$i} {
+                            stroke-dashoffset: $doughnut-dasharray - ($i / 100 * $doughnut-dasharray);
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    .no-progress {
+        height: $chart-size;
+        width: $chart-size;
+        background-color: $doughnut-empty-colour;
+        border-radius: 50%;
+        position: relative;
+
+        .icon {
+            position: absolute;
+            top: 50%;
+            /*rtl:ignore*/
+            left: 50%;
+            margin: 0;
+            transform: translate(-45%, -45%);
+            color: #fff;
+            height: ($chart-size / 2) + 10px;
+            width: ($chart-size / 2) + 10px;
+            font-size: ($chart-size / 2) + 10px;
+        }
+    }
 }
