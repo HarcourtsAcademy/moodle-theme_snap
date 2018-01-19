@@ -34,7 +34,7 @@ $string['admin'] = 'Admin';
 $string['advancedbrandingheading'] = 'Advanced branding';
 $string['advancedbrandingheadingdesc'] = '';
 $string['ago'] = 'ago';
-$string['alphabetical'] = 'Alphabetical'; //Academy Patch M#060
+$string['alphabetical'] = '<i class="fa fa-sort-alpha-asc" aria-hidden="true"></i> Alphabetical'; //Academy Patch M#060
 $string['answered'] = 'Answered';
 $string['appendices'] = 'Tools';
 $string['assigndraft'] = 'Draft requires your confirmation';
@@ -183,6 +183,7 @@ $string['instagram'] = 'Instagram';
 $string['instagramdesc'] = 'The url of your instagram account.';
 $string['introduction'] = 'Introduction';
 $string['knowledgebase'] = 'Moodlerooms Knowledge Base';
+$string['lastaccessed'] = '<i class="fa fa-history" aria-hidden="true"></i> Last Accessed'; //Academy Patch M#060
 $string['list'] = 'List';
 $string['linkedin'] = 'LinkedIn';
 $string['linkedindesc'] = 'The url of your organisation&#8217;s LinkedIn.';
@@ -226,7 +227,7 @@ $string['notattempted'] = 'Not attempted';
 $string['notcontributed'] = 'Not contributed';
 $string['notpublished'] = 'Not published to students';
 $string['notsubmitted'] = 'Not Submitted';
-$string['orderedby'] = 'Ordered by'; //Academy Patch M#060
+$string['orderedby'] = '<i class="fa fa-sort" aria-hidden="true"></i> Ordered by'; //Academy Patch M#060
 $string['overdue'] = 'Overdue';
 $string['personalmenu'] = 'Personal menu';
 $string['personalmenufeatures'] = 'Personal menu features';
