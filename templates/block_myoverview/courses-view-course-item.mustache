@@ -57,8 +57,8 @@ background-size: cover;">
             <a href="" class="btn btn-success">Open</a>
         </div>
         <div class="card-badges">
-            <span class="badge badge-pill badge-info"><i class="fa fa-clock-o"></i> 30 min</span>
-            <span class="badge badge-pill badge-info"><i class="fa fa-tachometer" aria-hidden="true"></i> Experienced</span>
+            {{#duration}}<span class="badge badge-pill badge-info"><i class="fa fa-clock-o"></i> {{duration}}</span>{{/duration}}
+            {{#experience}}<span class="badge badge-pill badge-info"><i class="fa fa-tachometer" aria-hidden="true"></i> {{experience}}</span>{{/experience}}
         </div>
     </div>
 </div>
