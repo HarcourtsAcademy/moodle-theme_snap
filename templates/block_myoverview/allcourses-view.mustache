@@ -62,28 +62,27 @@
                 </li>
             </ul>
                     </nav>-->
+        <form action="#allcourses-tab">
             <div class="col-lg-6">
-                <form action="#allcourses-tab">
                     <div class="form-group">
                         <div class="input-group">
-                            <input type="text" class="form-control" name="q" placeholder="Search all courses...">
+                            <input type="text" class="form-control" name="q" value="{{#searchcriteria.search}}{{searchcriteria.search}}{{/searchcriteria.search}}" placeholder="{{#str}} searchcourses {{/str}}">
                             <input type="hidden" name="myoverviewtab" value="allcourses"/>
                             <span class="input-group-btn">
                                 <button class="btn btn-light my-2 my-sm-0" type="submit">Search</button>
                             </span>
                         </div>
                     </div>
-                </form>
             </div>
             <ul class="nav nav-pills">
                 <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">Role</a>
                     <div class="dropdown-menu">
-                        <a class="dropdown-item" href="#">Action</a>
-                        <a class="dropdown-item" href="#">Another action</a>
-                        <a class="dropdown-item" href="#">Something else here</a>
-                        <div class="dropdown-divider"></div>
-                        <a class="dropdown-item" href="#">Separated link</a>
+                        <select name="r" class="custom-select" multiple>
+                            <option value="sales">Sales</option>
+                            <option value="property-management">Property Management</option>
+                            <option value="leadership">Leadership</option>
+                        </select>
                     </div>
                 </li>
                 <li class="nav-item dropdown">
@@ -107,6 +106,7 @@
                     </div>
                 </li>
             </ul>
+        </form>
     </div>
 
     <div class="tab-content">
