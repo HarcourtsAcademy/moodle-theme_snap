@@ -80,3 +80,8 @@
     /* For IE 8*/
     -ms-filter: "progid:DXImageTransform.Microsoft.gradient(startColorstr=#7700adef, endColorstr=#7700adef)";
 }
+
+/* Visually separate Course table of contents from the contents on the right. */
+body.path-course #region-main {
+    border-left: 1px solid #eee;
+}
