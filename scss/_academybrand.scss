@@ -82,6 +82,8 @@
 }
 
 /* Visually separate Course table of contents from the contents on the right. */
-body.path-course #region-main {
-    border-left: 1px solid #eee;
+@include media-breakpoint-up(lg) {
+    body.path-course #region-main {
+        border-left: 1px solid #eee;
+    }
 }
