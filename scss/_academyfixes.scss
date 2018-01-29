@@ -29,3 +29,8 @@ i.pull-left {
     border-top-left-radius: 0;
     border-bottom-left-radius: 0;
 }
+
+/* Hide Snap activity completion icons for subcourses. */
+li.activity.subcourse .snap-asset-completion-tracking {
+    display: none;
+}
