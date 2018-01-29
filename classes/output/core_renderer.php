@@ -606,6 +606,12 @@ class core_renderer extends \theme_boost\output\core_renderer {
         }
 
         // User quicklinks.
+        /* START Academy Patch M#060 Customise Moodlerooms Snap theme. */
+        $courseslink = [
+            'link' => s($CFG->wwwroot). '/my/index.php',
+            'title' => get_string('mycourses')
+        ];
+        /* END Academy Patch M#060 */
         $profilelink = [
             'link' => s($CFG->wwwroot). '/user/profile.php',
             'title' => get_string('profile')
@@ -629,7 +635,7 @@ class core_renderer extends \theme_boost\output\core_renderer {
          * $quicklinks = [$profilelink, $preferenceslink, $gradelink, $logoutlink];
          *
          */
-        $quicklinks = [$preferenceslink, $gradelink, $logoutlink];
+        $quicklinks = [$courseslink, $preferenceslink, $gradelink, $logoutlink]; // Academy Patch M#060.
 
         // Render custom blocks.
         $renderer = $PAGE->get_renderer('core_user', 'myprofile');
@@ -1724,10 +1730,12 @@ HTML;
             }
 
             // Replace my courses none-link with link to snap personal menu.
+            /* START Academy Patch M#060 Customise Moodlerooms Snap theme.
             if ($item->key === 'mycourses') {
                 $breadcrumbs .= '<li class="breadcrumb-item">' .$snapmycourses. '</li>';
                 continue;
             }
+            END Academy Patch M#060 */
 
             if ($item->type == \navigation_node::TYPE_COURSE) {
                 $courseitem = $item;
