@@ -85,3 +85,15 @@ body.atto-fullscreen {
     background-color: #f8d7da;
     border-color: #f5c6cb;
 }
+
+/* Improve appearance of mod/questionnaire pages. */
+.qn-question {
+    background-color: transparent;
+}
+.qn-info {
+    background-color: transparent;
+}
+.qn-answer input[type="radio"],
+.qn-answer input[type="checkbox"] {
+    margin-left: 3px;
+}
