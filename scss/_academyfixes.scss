@@ -65,3 +65,23 @@ body.atto-fullscreen {
     top: inherit;
     bottom: 0;
 }
+
+/* Highlight quiz answers more obviously. */
+#region-main .formulation .correct {
+    padding: 0 0 4px 25px;
+    margin: 0;
+    border: 1px solid transparent;
+    border-radius: .25rem;
+    color: #155724;
+    background-color: #d4edda;
+    border-color: #c3e6cb;
+}
+#region-main .formulation .incorrect {
+    padding: 0 0 4px 25px;
+    margin: 0;
+    border: 1px solid transparent;
+    border-radius: .25rem;
+    color: #721c24;
+    background-color: #f8d7da;
+    border-color: #f5c6cb;
+}
