@@ -34,3 +34,23 @@ i.pull-left {
 li.activity.subcourse .snap-asset-completion-tracking {
     display: none;
 }
+
+/* Fix Atto fullscreen weirdness in Snap theme. */
+body.atto-fullscreen {
+    section#region-main {
+        padding: 0;
+
+        .mform .fcontainer>.fitem:hover.form-group.fitem:hover {
+            background-color: transparent;
+        }
+
+        .form-control {
+            border: 0;
+        }
+
+        .editor_atto_content {
+            height: auto !important;
+            max-height: inherit!important;
+        }
+    }
+}
