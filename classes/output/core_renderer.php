@@ -1652,7 +1652,7 @@ HTML;
         global $CFG, $DB, $OUTPUT, $USER;
         
         $plugin = enrol_get_plugin('snipcart');
-        if (empty($plugin)) {
+        if (empty($plugin) || !enrol_is_enabled('snipcart')) {
             return '';
         }
 
