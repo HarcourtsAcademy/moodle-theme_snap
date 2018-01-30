@@ -59,3 +59,9 @@ body.atto-fullscreen {
         }
     }
 }
+
+/* Fix Cover carousel captions from expanding in height. */
+#snap-site-carousel .carousel-caption {
+    top: inherit;
+    bottom: 0;
+}

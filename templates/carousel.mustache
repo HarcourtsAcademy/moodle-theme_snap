@@ -48,7 +48,9 @@
                     <div class="carousel-slide" style="background-image:url({{{image}}});">
                         <div class="carousel-caption d-none d-md-block">
                             <h1>{{title}}</h1>
-                            <p>{{subtitle}}</p>
+                            {{! START Academy Patch M#60 Add ability to add buttons with links to header carousel banners. }}
+                            <div class="carousel-caption-subtitle">{{{subtitle}}}</div>
+                            {{! END Academy Patch M#60 }}
                         </div>
                     </div>
                 </div>

@@ -95,21 +95,21 @@ $name = 'theme_snap/slide_one_subtitle';
 $title = new lang_string('subtitle', 'theme_snap');
 $description = '';
 $default = '';
-$setting = new admin_setting_configtext($name, $title, $description, $default);
+$setting = new admin_setting_confightmleditor($name, $title, $description, $default); // Academy Patch M#60
 $snapsettings->add($setting);
 
 $name = 'theme_snap/slide_two_subtitle';
 $title = new lang_string('subtitle', 'theme_snap');
 $description = '';
 $default = '';
-$setting = new admin_setting_configtext($name, $title, $description, $default);
+$setting = new admin_setting_confightmleditor($name, $title, $description, $default); // Academy Patch M#60
 $snapsettings->add($setting);
 
 $name = 'theme_snap/slide_three_subtitle';
 $title = new lang_string('subtitle', 'theme_snap');
 $description = '';
 $default = '';
-$setting = new admin_setting_configtext($name, $title, $description, $default);
+$setting = new admin_setting_confightmleditor($name, $title, $description, $default); // Academy Patch M#60
 $snapsettings->add($setting);
 
 $settings->add($snapsettings);
