@@ -471,6 +471,13 @@ class course_renderer extends \core_course_renderer {
             // (note, I also tried this using a combo of substr and strpos and preg_match was much faster!)
             $matches = array();
             preg_match ('#/(\w+)-#', $mod->icon, $matches);
+
+            /* START Academy Patch M#60 Ignore resources with no file. */
+            if (empty($matches)) {
+                return false;
+            }
+            /* END Academy Patch M#60 */
+
             $filetype = $matches[1];
             $ext = $filetype;
             $extension = array(
@@ -499,6 +506,13 @@ class course_renderer extends \core_course_renderer {
         if ($mod->modname == 'resource') {
             $matches = array();
             preg_match ('#/(\w+)-#', $mod->icon, $matches);
+
+            /* START Academy Patch M#60 Ignore resources with no file. */
+            if (empty($matches)) {
+                return false;
+            }
+            /* END Academy Patch M#60 */
+
             $filetype = $matches[1];
             $extension = array('jpg', 'jpeg', 'png', 'gif', 'svg', 'image');
             if (in_array($filetype, $extension)) {
