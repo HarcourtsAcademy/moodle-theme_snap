@@ -234,8 +234,11 @@ input[type="checkbox"] {
 // TODO - move all atto styles to here
 
 div.editor_atto {
+    /* START Academy Patch M#060 Customise Moodlerooms Snap theme.
+     * Keep Atto toolbar at the top of the text area.
     display: flex;
     flex-direction: column-reverse;
+    END Academy Patch M#060 */
 }
 
 div.editor_atto_toolbar {
