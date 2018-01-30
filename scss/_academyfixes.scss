@@ -35,6 +35,11 @@ li.activity.subcourse .snap-asset-completion-tracking {
     display: none;
 }
 
+/* Fix Snap activity completion icons appearing over the top of activity text. */
+.snap-activity .contentwithoutlink {
+    margin-right: 20px;
+}
+
 /* Fix Atto fullscreen weirdness in Snap theme. */
 body.atto-fullscreen {
     section#region-main {
