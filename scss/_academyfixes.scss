@@ -67,23 +67,35 @@ body.atto-fullscreen {
 }
 
 /* Highlight quiz answers more obviously. */
-#region-main .formulation .correct {
-    padding: 0 0 4px 25px;
-    margin: 0;
-    border: 1px solid transparent;
-    border-radius: .25rem;
-    color: #155724;
-    background-color: #d4edda;
-    border-color: #c3e6cb;
-}
-#region-main .formulation .incorrect {
-    padding: 0 0 4px 25px;
-    margin: 0;
-    border: 1px solid transparent;
-    border-radius: .25rem;
-    color: #721c24;
-    background-color: #f8d7da;
-    border-color: #f5c6cb;
+#region-main  {
+    .formulation {
+        .correct,
+        .incorrect {
+            width: auto;
+            padding: 0 0 4px 25px;
+            margin: 0;
+            border: 1px solid transparent;
+            border-radius: .25rem;
+        }
+        .correct {
+            color: #155724;
+            background-color: #d4edda;
+            border-color: #c3e6cb;
+        }
+        .incorrect {
+            color: #721c24;
+            background-color: #f8d7da;
+            border-color: #f5c6cb;
+        }
+
+    }
+    .que.oumultiresponse .answer label {
+        margin-right: 1rem;
+    }
+    input.answerinputfield.correct,
+    input.answerinputfield.incorrect {
+        margin-right: 1rem;
+    }
 }
 
 /* Improve appearance of mod/questionnaire pages. */
