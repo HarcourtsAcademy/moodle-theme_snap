@@ -6,6 +6,9 @@
     /* Override the bootstrapbase theme making this 1px */
     height: 0;
   }
+  #page-content h2 {
+      display: none;
+  }
   #scormtop {
     /* Hide the 'Review mode' message when re-opening a completed scorm activity. */
     display: none;
