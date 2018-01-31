@@ -66,7 +66,7 @@
             <div class="col-lg-6">
                     <div class="form-group">
                         <div class="input-group">
-                            <input type="text" class="form-control border-white" name="q" value="{{#searchcriteria.search}}{{searchcriteria.search}}{{/searchcriteria.search}}" placeholder="{{#str}} searchcourses {{/str}}">
+                            <input type="text" class="form-control border-white" name="search" value="{{#searchcriteria.search}}{{searchcriteria.search}}{{/searchcriteria.search}}" placeholder="{{#str}} searchcourses {{/str}}">
                             <input type="hidden" name="myoverviewtab" value="allcourses"/>
                             <span class="input-group-btn">
                                 <button class="btn btn-light my-2 my-sm-0 rounded-right" type="submit">Search</button>
@@ -111,7 +111,7 @@
 
     <div class="tab-content">
         <div class="tab-pane active fade in" id="myoverview_allcourses_dates">
-            {{> block_myoverview/timeline-view-dates }}
+            {{> block_myoverview/allcourses-view-courses }}
         </div>
         <div class="tab-pane fade" id="myoverview_allcourses_courses">
             {{> block_myoverview/allcourses-view-courses }}
