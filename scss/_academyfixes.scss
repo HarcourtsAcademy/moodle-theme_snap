@@ -45,7 +45,8 @@ body.atto-fullscreen {
     section#region-main {
         padding: 0;
 
-        .mform .fcontainer>.fitem:hover.form-group.fitem:hover {
+        .mform .fcontainer>.fitem:hover.form-group.fitem:hover,
+        form#adminsettings .form-item {
             background-color: transparent;
         }
 
