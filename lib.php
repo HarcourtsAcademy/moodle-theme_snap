@@ -240,7 +240,7 @@ function theme_snap_get_pre_scss($theme) {
     } else {
         $userfontsans .= ",";
     }
-    $fallbacksans = 'Roboto, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif';
+    $fallbacksans = '"Source Sans Pro","Helvetica Neue",Arial,sans-serif'; // Academy Patch M#060
     $settings['font-family-feature'] = $userfontsans . $fallbacksans;
 
     $userfontserif = $theme->settings->seriffont;
@@ -249,7 +249,7 @@ function theme_snap_get_pre_scss($theme) {
     } else {
         $userfontserif .= ",";
     }
-    $fallbackserif = 'Georgia,"Times New Roman", Times, serif';
+    $fallbackserif = '"Source Sans Pro","Helvetica Neue",Arial,sans-serif'; // Academy Patch M#060
     $settings['font-family-serif'] = $userfontserif . $fallbackserif;
 
     if (!empty($theme->settings->customisenavbar)) {
