@@ -28,38 +28,36 @@
 }}
 <div class="col-lg-6">
     <div class="card m-b-1 courses-view-course-item {{durationclass}} {{experienceclass}} {{roleclass}}">
-        <div class="card-block course-info-container" id="course-info-container-{{id}}" style="background-image: url({{coverimageurl}});
-background-position: top left;
-background-size: cover;">
-            <div class="hidden-sm-up hidden-phone">
-                <div class="media">
-                    {{> block_myoverview/progress-chart}}
+        <div class="card-block course-info-container" id="course-info-container-{{id}}">
+            <div class="media" style="background-image: url({{coverimageurl}});">
+                <div class="media-body">
                     <h4 class="h5"><a href="{{viewurl}}" class="{{^visible}}dimmed{{/visible}}">{{{fullnamedisplay}}}</a></h4>
+                    <p class="summary hidden-md-up visible-phone">
+                        {{#shortentext}} 140, {{summary}}{{/shortentext}}
+                    </p>
+                    <p class="summary hidden-sm-down hidden-lg-up visible-tablet">
+                        {{#shortentext}} 240, {{summary}}{{/shortentext}}
+                    </p>
+                    <p class="summary hidden-md-down visible-desktop">
+                        {{#shortentext}} 140, {{summary}}{{/shortentext}}
+                    </p>
+                    <div class="card-badges">
+                        {{#duration}}<span class="badge badge-pill"><i class="fa fa-clock-o"></i> {{duration}}</span>{{/duration}}
+                        {{#experience}}<span class="badge badge-pill"><i class="fa fa-tachometer" aria-hidden="true"></i> {{experience}}</span>{{/experience}}
+                        {{#role}}<span class="badge badge-pill"><i class="fa fa-group" aria-hidden="true"></i> {{role}}</span>{{/role}}
+                    </div>
+                </div>
+                <div class="media-left">
+                    <div class="media-object">
+                        {{> block_myoverview/progress-chart}}
+                    </div>
+                    <div class="card-actions">
+                        <a href="" class="btn btn-outline-primary rounded">Open</a>
+                    </div>
                 </div>
             </div>
-            <div class="hidden-xs-down visible-phone">
-                <div class="media">
-                    <div class="media-left">
-                        <div class="media-object">
-                            {{> block_myoverview/progress-chart}}
-                        </div>
-                    </div>
-                    <div class="media-body">
-                        <h4 class="h5"><a href="{{viewurl}}" class="{{^visible}}dimmed{{/visible}}">{{{fullnamedisplay}}}</a></h4>
-                        <p class="summary">
-                            {{#shortentext}} 100, {{summary}}{{/shortentext}}
-                        </p>
-                    </div>
-                </div>
-            </div>
+
         </div>
-        <div class="card-actions pull-right">
-            <a href="" class="btn btn-success">Open</a>
-        </div>
-        <div class="card-badges">
-            {{#duration}}<span class="badge badge-pill badge-info"><i class="fa fa-clock-o"></i> {{duration}}</span>{{/duration}}
-            {{#experience}}<span class="badge badge-pill badge-info"><i class="fa fa-tachometer" aria-hidden="true"></i> {{experience}}</span>{{/experience}}
-            {{#role}}<span class="badge badge-pill badge-info"><i class="fa fa-group" aria-hidden="true"></i> {{role}}</span>{{/role}}
-        </div>
+
     </div>
 </div>

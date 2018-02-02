@@ -23,7 +23,7 @@
     {}
 }}
 <div id="allcourses-view-{{uniqid}}" data-region="allcourses-view">
-    <div class="row text-xs-center bg-dark m-y-1 p-t-1">
+    <div class="row text-xs-center m-y-1 p-t-1">
 <!--        <nav class="navbar navbar-toggleable-md navbar-dark bg-dark m-t-1 justify-content-between">
             <form class="form-inline mr-auto">
                 <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
@@ -62,50 +62,50 @@
                 </li>
             </ul>
                     </nav>-->
-        <form action="#allcourses-tab">
-            <div class="col-lg-6">
+        <form action="#allcourses-tab" class="m-x-auto">
+            <div class="col-lg-12">
                     <div class="form-group">
                         <div class="input-group">
-                            <input type="text" class="form-control border-white" name="search" value="{{#searchcriteria.search}}{{searchcriteria.search}}{{/searchcriteria.search}}" placeholder="{{#str}} searchcourses {{/str}}">
+                            <input type="text" class="form-control rounded-left" name="search" value="{{#searchcriteria.search}}{{searchcriteria.search}}{{/searchcriteria.search}}" placeholder="{{#str}} searchcourses {{/str}}">
                             <input type="hidden" name="myoverviewtab" value="allcourses"/>
                             <span class="input-group-btn">
                                 <button class="btn btn-light my-2 my-sm-0 rounded-right" type="submit">Search</button>
                             </span>
                         </div>
+                        <ul class="nav nav-pills">
+                            <li class="nav-item dropdown">
+                                <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">Role</a>
+                                <div class="dropdown-menu">
+                                    <select name="r" class="custom-select" multiple>
+                                        <option value="sales">Sales</option>
+                                        <option value="property-management">Property Management</option>
+                                        <option value="leadership">Leadership</option>
+                                    </select>
+                                </div>
+                            </li>
+                            <li class="nav-item dropdown">
+                                <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">Duration</a>
+                                <div class="dropdown-menu">
+                                    <a class="dropdown-item" href="#">Action</a>
+                                    <a class="dropdown-item" href="#">Another action</a>
+                                    <a class="dropdown-item" href="#">Something else here</a>
+                                    <div class="dropdown-divider"></div>
+                                    <a class="dropdown-item" href="#">Separated link</a>
+                                </div>
+                            </li>
+                            <li class="nav-item dropdown">
+                                <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">Experience Level</a>
+                                <div class="dropdown-menu">
+                                    <a class="dropdown-item" href="#">Action</a>
+                                    <a class="dropdown-item" href="#">Another action</a>
+                                    <a class="dropdown-item" href="#">Something else here</a>
+                                    <div class="dropdown-divider"></div>
+                                    <a class="dropdown-item" href="#">Separated link</a>
+                                </div>
+                            </li>
+                        </ul>
                     </div>
             </div>
-            <ul class="nav nav-pills">
-                <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">Role</a>
-                    <div class="dropdown-menu">
-                        <select name="r" class="custom-select" multiple>
-                            <option value="sales">Sales</option>
-                            <option value="property-management">Property Management</option>
-                            <option value="leadership">Leadership</option>
-                        </select>
-                    </div>
-                </li>
-                <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">Duration</a>
-                    <div class="dropdown-menu">
-                        <a class="dropdown-item" href="#">Action</a>
-                        <a class="dropdown-item" href="#">Another action</a>
-                        <a class="dropdown-item" href="#">Something else here</a>
-                        <div class="dropdown-divider"></div>
-                        <a class="dropdown-item" href="#">Separated link</a>
-                    </div>
-                </li>
-                <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">Experience Level</a>
-                    <div class="dropdown-menu">
-                        <a class="dropdown-item" href="#">Action</a>
-                        <a class="dropdown-item" href="#">Another action</a>
-                        <a class="dropdown-item" href="#">Something else here</a>
-                        <div class="dropdown-divider"></div>
-                        <a class="dropdown-item" href="#">Separated link</a>
-                    </div>
-                </li>
-            </ul>
         </form>
     </div>
 
