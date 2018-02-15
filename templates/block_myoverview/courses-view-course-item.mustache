@@ -52,7 +52,7 @@
                         {{> block_myoverview/progress-chart}}
                     </div>
                     <div class="card-actions">
-                        <a href="" class="btn btn-outline-primary rounded">Open</a>
+                        <a href="{{viewurl}}" class="btn btn-outline-primary rounded">{{#isenrolled}}{{#str}}resourcedisplayopen{{/str}}{{/isenrolled}}{{^isenrolled}}{{#str}}view{{/str}}{{/isenrolled}}</a>
                     </div>
                 </div>
             </div>
