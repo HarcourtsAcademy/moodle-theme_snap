@@ -110,3 +110,9 @@ body.atto-fullscreen {
 .qn-answer input[type="checkbox"] {
     margin-left: 3px;
 }
+
+/* Hide the 'No enrolment key required.' message on the self-enrolment form. */
+body.path-enrol #region-main form fieldset#id_selfheader {
+    legend a:after { content: ''; }
+    .fcontainer { display: none; }
+}
