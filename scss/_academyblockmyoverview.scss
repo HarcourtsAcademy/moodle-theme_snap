@@ -1,8 +1,16 @@
 /* Hide the 'Course Overview' heading from the dashboard. */
 #page-my-index {
-    .block_myoverview h3 {
-        display: none;
+    .block_myoverview {
+        h3 {
+            display: none;
+        }
+        .tab-content .row {
+            display: flex;
+            flex-wrap: wrap;
+            &.hidden { display: none; }
+        }
     }
+
     .courses-view-course-item {
         background-color: #ddd;
         height: auto;
