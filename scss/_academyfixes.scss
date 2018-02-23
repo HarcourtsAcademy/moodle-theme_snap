@@ -120,3 +120,8 @@ body.path-enrol #region-main form fieldset#id_selfheader {
 body#page-login-index #page {
     background-color: grey;
 }
+
+/* Fix top of course cover images being cropped out. */
+body.path-course-view #page-header {
+    background-position-y: 3em;
+}
