@@ -1706,7 +1706,7 @@ HTML;
 
         $breadcrumbs = '';
         $courseitem = null;
-        $snapmycourses = html_writer::link('#', get_string('menu', 'theme_snap'), array('class' => 'js-snap-pm-trigger'));
+        // $snapmycourses = html_writer::link('#', get_string('menu', 'theme_snap'), array('class' => 'js-snap-pm-trigger')); // Academy Patch M#060
 
         foreach ($this->page->navbar->get_items() as $item) {
             $item->hideicon = true;
@@ -1730,12 +1730,15 @@ HTML;
             }
 
             // Replace my courses none-link with link to snap personal menu.
-            /* START Academy Patch M#060 Customise Moodlerooms Snap theme.
+            /* START Academy Patch M#060 Customise Moodlerooms Snap theme. */
             if ($item->key === 'mycourses') {
-                $breadcrumbs .= '<li class="breadcrumb-item">' .$snapmycourses. '</li>';
+                //$breadcrumbs .= '<li class="breadcrumb-item">' .$snapmycourses. '</li>';
+                $breadcrumbs .= '<li class="breadcrumb-item">';
+                $breadcrumbs .= html_writer::link(new moodle_url('/my', ['redirect' => 0]), get_string('mycourses'));
+                $breadcrumbs .= '</li>';
                 continue;
             }
-            END Academy Patch M#060 */
+            /* END Academy Patch M#060 */
 
             if ($item->type == \navigation_node::TYPE_COURSE) {
                 $courseitem = $item;
