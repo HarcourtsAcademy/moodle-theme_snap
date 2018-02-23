@@ -13,6 +13,7 @@
 
     .courses-view-course-item {
         background-color: #ddd;
+        border: 0;
         height: auto;
 
         .course-info-container {
@@ -23,7 +24,7 @@
                 background-size: cover;
                 background-repeat: no-repeat;
 
-                .media-left {
+                .media-right {
                     padding: 1em;
                     background-color: rgba(0,0,0,.6);
                 }
@@ -31,10 +32,11 @@
                     padding: 1rem;
                     padding-bottom: 0.5rem;
                     background-color: rgba(255,255,255,.95);
+                    border: 1px solid rgba(0,0,0,.125);
 
-                    .media-object {
-                        margin-bottom: 3rem;
-                    }
+                }
+                .media-object {
+                    margin-bottom: 3rem;
                 }
             }
             .summary {
