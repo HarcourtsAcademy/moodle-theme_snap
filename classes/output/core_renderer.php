@@ -880,6 +880,11 @@ class core_renderer extends \theme_boost\output\core_renderer {
             // My course
             // This is intentional.
             $heading = format_string($COURSE->fullname);
+            /* START Academy Patch M#060 Customise Moodlerooms Snap. */
+            if ($this->page->pagelayout != 'course') {
+                $heading = '<i class="fa fa-arrow-left" aria-hidden="true"></i> ' . $heading;
+            }
+            /* END Academy Patch M#060 */
             $heading = html_writer::link($courseurl, $heading);
             $heading = html_writer::tag($tag, $heading);
         } else {
