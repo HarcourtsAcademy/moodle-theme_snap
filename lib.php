@@ -169,6 +169,8 @@ function theme_snap_pluginfile($course, $cm, $context, $filearea, $args, $forced
 }
 
 function theme_snap_myprofile_navigation(core_user\output\myprofile\tree $tree, $user, $iscurrentuser, $course) {
+    return; // Academy Patch M#060. Hide the User preferences link from the User details list on the profile page.
+
     global $PAGE;
 
     if ($PAGE->theme->name === 'snap') {

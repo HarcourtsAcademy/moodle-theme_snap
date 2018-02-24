@@ -620,10 +620,12 @@ class core_renderer extends \theme_boost\output\core_renderer {
             'link' => s($CFG->wwwroot). '/grade/report/overview/index.php',
             'title' => get_string('grades')
         ];
+        /* START Academy Patch M#060 Customise Moodlerooms Snap theme.
         $preferenceslink = [
             'link' => s($CFG->wwwroot). '/user/preferences.php',
             'title' => get_string('preferences')
         ];
+        END Academy Patch M#060 */
         $logoutlink = [
             'id' => 'snap-pm-logout',
             'link' => s($CFG->wwwroot).'/login/logout.php?sesskey='.sesskey(),
@@ -635,7 +637,7 @@ class core_renderer extends \theme_boost\output\core_renderer {
          * $quicklinks = [$profilelink, $preferenceslink, $gradelink, $logoutlink];
          *
          */
-        $quicklinks = [$courseslink, $preferenceslink, $gradelink, $logoutlink]; // Academy Patch M#060.
+        $quicklinks = [$courseslink, $gradelink, $logoutlink]; // Academy Patch M#060.
 
         // Render custom blocks.
         $renderer = $PAGE->get_renderer('core_user', 'myprofile');
