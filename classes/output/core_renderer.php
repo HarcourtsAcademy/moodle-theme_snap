@@ -865,13 +865,37 @@ class core_renderer extends \theme_boost\output\core_renderer {
      * @return string
      */
     public function page_heading($tag = 'h1') {
-        global $COURSE, $PAGE;
+        global $CFG, $COURSE, $PAGE;
 
         $heading = $this->page->heading;
 
         if ($this->page->pagelayout == 'mypublic') {
             // For the user profile page message button we need to call 2.9 content_header.
             $heading = parent::context_header();
+            /* START Academy Patch M#060. Use the course topic name and link as the heading when viewing course materials. */
+        } else if ((($COURSE->format == 'topics' || $COURSE->format == 'weeks')) &&
+                $this->page->pagelayout == 'incourse' &&
+                substr($this->page->pagetype,0,4)  == 'mod-') {
+
+            require_once($CFG->dirroot.'/course/lib.php');
+            require_once($CFG->dirroot.'/course/format/lib.php');
+
+            $cm = $this->page->cm;
+            $section = $cm->section;
+            $sectioninfo = $cm->get_section_info($section);
+            $sectionname = get_section_name($COURSE, $sectioninfo);
+
+            $sectionnumber = $this->get_section_for_id($section);
+            $sectionurl = course_get_url($COURSE, $sectionnumber);
+
+            $heading = format_string($sectionname);
+            if (empty($heading) || $heading == get_string('general')) {
+                $heading = get_string('introduction', 'theme_snap');
+            }
+            $heading = '<i class="fa fa-chevron-left" aria-hidden="true"></i> ' . $heading;
+            $heading = html_writer::link($sectionurl, $heading);
+            $heading = html_writer::tag($tag, $heading);
+            /* END Academy Patch M#060. */
         } else if ($COURSE->id != SITEID && stripos($heading, format_string($COURSE->fullname)) === 0) {
             // If we are on a course page which is not the site level course page.
             $courseurl = new moodle_url('/course/view.php', ['id' => $COURSE->id]);
@@ -884,7 +908,7 @@ class core_renderer extends \theme_boost\output\core_renderer {
             $heading = format_string($COURSE->fullname);
             /* START Academy Patch M#060 Customise Moodlerooms Snap. */
             if ($this->page->pagelayout != 'course') {
-                $heading = '<i class="fa fa-arrow-left" aria-hidden="true"></i> ' . $heading;
+                $heading = '<i class="fa fa-chevron-left" aria-hidden="true"></i> ' . $heading;
             }
             /* END Academy Patch M#060 */
             $heading = html_writer::link($courseurl, $heading);
