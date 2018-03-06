@@ -1675,57 +1675,6 @@ HTML;
         return $navoutput;
     }
 
-    /** START Academy Patch M#060
-     * Renders pop-up shopping cart
-     * @return string shopping cart popup area.
-     */
-    protected function render_shoppingcart_popups() {
-        global $CFG, $DB, $OUTPUT, $USER;
-        
-        $plugin = enrol_get_plugin('snipcart');
-        if (empty($plugin) || !enrol_is_enabled('snipcart')) {
-            return '';
-        }
-
-        // Logged in users only
-        if (!isloggedin() || isguestuser() || user_not_fully_set_up($USER) ||
-            get_user_preferences('auth_forcepasswordchange') ||
-            ($CFG->sitepolicy && !$USER->policyagreed && !is_siteadmin())) {
-            return '';
-        }
-
-        $manager = \enrol_snipcart\get_snipcartaccounts_manager();
-        $currency = $plugin->get_currency_for_country($USER->country);
-        $publicapikey = $manager->get_snipcartaccount_info($currency, 'publicapikey');
-
-        $userfullname   = fullname($USER);
-        $useremail      = trim(preg_replace('/\s*\([^)]*\)/', '', $USER->email));
-        $userphone      = $USER->phone1;
-        $useraddress    = $USER->address;
-        $usercity       = $USER->city;
-        $usercountry    = $USER->country;
-
-        $postcodefieldid    = $DB->get_field('user_info_field', 'id', array( 'shortname' => 'postcode'));
-        $postcodefield      = $DB->get_record('user_info_data', array('userid' => $USER->id, 'fieldid' => $postcodefieldid));
-        $userpostcode       = (!empty($postcodefield)) ? $postcodefield->data : '';
-
-        $context = [
-            'userfullname'  => $userfullname,
-            'useremail'     => $useremail,
-            'userphone'     => $userphone,
-            'useraddress'   => $useraddress,
-            'usercity'      => $usercity,
-            'usercountry'   => $usercountry,
-            'userpostcode'  => $userpostcode,
-            'currency'      => $currency,
-            'userid'        => $USER->id,
-            'publicapikey'  => $publicapikey,
-        ];
-        $navoutput = $OUTPUT->render_from_template('theme_snap/shoppingcart_popover', $context);
-        return $navoutput;
-    }
-    /* END Academy Patch M#060 */
-
     /**
      * This renders the navbar.
      * Uses bootstrap compatible html.
