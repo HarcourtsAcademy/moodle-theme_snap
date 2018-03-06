@@ -130,3 +130,14 @@ body.path-course-view #page-header {
 #course-category-listings .listitem[data-visible="0"]>div>a {
     color: grey;
 }
+
+/* Hide duplicate course images from the course enrolment page. */
+body#page-enrol-index #region-main {
+    .summary {
+        width: 100%;
+        float: none;
+    }
+    .courseimage {
+        display: none;
+    }
+}
