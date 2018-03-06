@@ -125,3 +125,8 @@ body#page-login-index #page {
 body.path-course-view #page-header {
     background-position-y: 3em;
 }
+
+/* Fix hidden courses no longer appearing faded under theme_snap */
+#course-category-listings .listitem[data-visible="0"]>div>a {
+    color: grey;
+}
