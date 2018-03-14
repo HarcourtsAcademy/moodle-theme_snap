@@ -1,0 +1,49 @@
+.ha-sp-slide img {
+    margin: 1rem 0;
+    box-shadow: 3px 3px 10px #ccc;
+}
+
+.ha-sp {
+
+    /* Same as p */
+    margin-top: 1rem;
+    margin-bottom: 1rem;
+
+    /* Same as Boostrap .alert */
+    position: relative;
+    padding: .75rem 1.25rem;
+    border: 1px solid transparent;
+    border-radius: .25rem;
+
+    &.ha-sp-reflection {
+        /* Same as Bootstrap .alert-primary */
+        color: #004085;
+        background-color: #cce5ff;
+        border-color: #b8daff;
+
+        h4:before {
+            content: "\f02d"; // fa-book
+        }
+    }
+
+    &.ha-sp-video {
+        font-size: 1.5em;
+        margin-bottom: 0;
+        padding-left: 0;
+        padding-bottom: 0;
+        &:before {
+            content: "\f03d"; // fa-video-camera
+        }
+    }
+
+    h4:before,
+    &:before {
+        padding-right: 0.4rem;
+        font: normal normal normal 14px/1 FontAwesome;
+        font-size: 2rem;
+        vertical-align: middle;
+        text-rendering: auto;
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+    }
+}
