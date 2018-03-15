@@ -13,16 +13,22 @@
     position: relative;
     padding: .75rem 1.25rem;
     border: 1px solid transparent;
-    border-radius: .25rem;
+    border-radius: .5rem;
 
     &.ha-sp-reflection {
         /* Same as Bootstrap .alert-primary */
-        color: #004085;
-        background-color: #cce5ff;
         border-color: #b8daff;
+        border-width: 2px;
 
-        h4:before {
+        &:before {
+            float: left;
             content: "\f02d"; // fa-book
+        }
+        h4,p {
+            padding-left: 2.4rem;
+        }
+        p:last-child {
+            margin-bottom: 0;
         }
     }
 
