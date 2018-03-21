@@ -143,10 +143,15 @@ body#page-enrol-index #region-main {
 }
 
 /* Fix spacing of Course Chapter Titles. */
-nav#course-toc #chapters .chapter-title {
-    display: block;
-    margin-top: 0.5em;
-    line-height: 1.3;
+nav#course-toc #chapters {
+    .chapter-title {
+        display: block;
+        margin-top: 0.5em;
+        line-height: 1.3;
+    }
+    img.snap-section-complete {
+        margin-top: 0.3em;
+    }
 }
 nav.section_footer a {
     line-height: 1.3em;
