@@ -694,6 +694,29 @@ EOF;
             }
         }
 
+        /* START Academy Patch M#60 Include link to Course Completion Report. */
+        // Course progress.
+        if ($COURSE->enablecompletion) {
+
+            $canviewcompletion = has_capability('report/completion:view', $coursecontext);
+            if (!is_guest($coursecontext) && $canviewcompletion) {
+                $iconurl = $OUTPUT->image_url('completion', 'theme');
+                $badgesicon = '<img src="'.$iconurl.'" class="svg-icon" alt="" role="presentation">';
+                $links[] = array(
+                    'link' => 'report/completion/index.php?course=' . $COURSE->id,
+                    'title' => $badgesicon.get_string('coursecompletion', 'completion')
+                );
+            } else {
+                $iconurl = $OUTPUT->image_url('completion', 'theme');
+                $badgesicon = '<img src="'.$iconurl.'" class="svg-icon" alt="" role="presentation">';
+                $links[] = array(
+                    'link' => 'blocks/completionstatus/details.php?course=' . $COURSE->id,
+                    'title' => $badgesicon.get_string('coursecompletion', 'completion')
+                );
+            }
+        }
+        /* END Academy Patch M#60 */
+
         // Output course tools section.
         $coursetools = get_string('coursetools', 'theme_snap');
         $iconurl = $OUTPUT->image_url('course_dashboard', 'theme');
