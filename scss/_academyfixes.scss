@@ -156,3 +156,14 @@ nav#course-toc #chapters {
 nav.section_footer a {
     line-height: 1.3em;
 }
+
+// Fix text spacing in the settings tree
+ul.block_tree.list li.item_with_icon {
+    line-height: 1.2rem;
+    margin-bottom: 0.3rem;
+}
+
+// Fix vertical alignment of the Filter and Reset buttons on the Enrolled Users page /enrol/users.php
+body#page-enrol-users #region-main form#filterform .form-group div:first-child:before {
+    content: '​'; // zero-width space
+}
