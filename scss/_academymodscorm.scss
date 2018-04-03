@@ -1,6 +1,6 @@
 /* START Academy Patch M#059 Hide 'Review mode' message from Articulate Rise SCORM activities. */
 #page-mod-scorm-player {
-  overflow-y: hidden;
+  // Removed in Moodle 3.3 overflow-y: hidden;
 
   #maincontent {
     /* Override the bootstrapbase theme making this 1px */
