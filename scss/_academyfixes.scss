@@ -167,3 +167,9 @@ ul.block_tree.list li.item_with_icon {
 body#page-enrol-users #region-main form#filterform .form-group div:first-child:before {
     content: '​'; // zero-width space
 }
+
+// Hide the Moodle messaging links in the Snap Course Footer as it leads to an error page
+// because the Moodle messaging function is currenly disabled.
+body.path-course #snap-course-footer-contacts .snap-media-body small {
+    display: none;
+}
