@@ -32,7 +32,9 @@ echo $OUTPUT->doctype() ?>
     <link rel="shortcut icon" href="<?php echo $OUTPUT->favicon(); ?>" />
     <?php echo $OUTPUT->standard_head_html() ?>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700" rel="stylesheet"> 
+    <?php // START Academy Patch M#60 Add Source Sans Pro font. ?>
+    <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700,900" rel="stylesheet">
+    <?php // END Academy Patch M#60 Add Source Sans Pro font. ?>
 </head>
 
 <body <?php echo $OUTPUT->body_attributes(); ?>>

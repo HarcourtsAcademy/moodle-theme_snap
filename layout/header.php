@@ -46,7 +46,9 @@ echo $OUTPUT->doctype();
 <?php echo $OUTPUT->standard_head_html() ?>
 <meta name="theme-color" content="<?php echo $PAGE->theme->settings->themecolor ?>">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700" rel="stylesheet"> 
+<?php // START Academy Patch M#60 Add Source Sans Pro font. ?>
+<link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700,900" rel="stylesheet">
+<?php // END Academy Patch M#60 Add Source Sans Pro font. ?>
 <?php /* START Academy Patch M#60 Remove Remove Roboto font code.
 <link href='//fonts.googleapis.com/css?family=Roboto:500,100,400,300' rel='stylesheet' type='text/css'>
 END Academy Patch M#60 */ ?>
