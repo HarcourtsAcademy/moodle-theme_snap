@@ -87,3 +87,21 @@
         border-left: 1px solid #eee;
     }
 }
+
+/* Fix Book module showing "previousprevious:" and "nextnext" on text links below content. */
+.path-mod-book .bookprev::after,
+.path-mod-book .booknext::before {
+    content: none;
+}
+.navtop.navtext a.bookprev,
+.navbottom.navtext a.bookprev,
+.navtop.navtext a.booknext,
+.navbottom.navtext a.booknext {
+    visibility: collapse;
+    font-size: 0;
+
+    .chaptername {
+        visibility: visible;
+        font-size: $font-size-root;
+    }
+}
