@@ -109,6 +109,12 @@
         </div>
     {{/error}}
 
+    {{! START ACADEMY PATHCH M#060 Customise Moodlerooms Snap theme }}
+    <p class="loginmessage">
+        <div class="text-center text-white">Login using your HarcourtsOne or Academy Account</div>
+    </p>
+    {{! END ACADEMY PATHCH M#060 }}
+
     <form action="{{loginurl}}" method="post" id="login" {{^passwordautocomplete}}autocomplete="off"{{/passwordautocomplete}}>
         <input id="anchor" type="hidden" name="anchor" value="">
         <script>document.getElementById('anchor').value = location.hash;</script>
