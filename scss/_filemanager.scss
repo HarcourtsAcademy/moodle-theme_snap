@@ -10,10 +10,12 @@
         font-size: small;
     }
 
+    /* START Academy Patch M#060 Customise Moodlerooms Snap theme
     .fp-btn-mkdir,
     .fp-btn-download {
         @include sr-only();
     }
+    END Academy Patch M#060 */
 
     // Hide :
     // pathbar (dir structure),
@@ -36,6 +38,7 @@
 }
 
 // Viewbar is shown on these pages.
+#page-mod-resource-mod, // Academy Patch M#060 Customise Moodlerooms Snap theme
 #page-user-files,
 #local-joulegrader-gradepane,
 #page-backup-backupfilesedit {
