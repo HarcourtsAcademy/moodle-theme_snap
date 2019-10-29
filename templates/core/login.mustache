@@ -111,8 +111,10 @@
 
     {{! START ACADEMY PATHCH M#060 Customise Moodlerooms Snap theme }}
     <p class="loginmessage">
-        <div class="text-center text-white">Login using your HarcourtsOne or Academy Account</div>
+    {{#hasinstructions}}<div class="text-white">{{{instructions}}}</div>{{/hasinstructions}}
+    {{^hasinstructions}}<div class="text-center text-white">Login using your HarcourtsOne or Academy Account</div>{{/hasinstructions}}
     </p>
+    <style>.js-only.snap-login {display: none;}</style>
     {{! END ACADEMY PATHCH M#060 }}
 
     <form action="{{loginurl}}" method="post" id="login" {{^passwordautocomplete}}autocomplete="off"{{/passwordautocomplete}}>
