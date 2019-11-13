@@ -25,24 +25,31 @@
                 background-repeat: no-repeat;
 
                 .media-right {
-                    padding: 1em;
+                    padding: 1rem 18px; // Use pixels to keep same size when font size reduces on smaller screens
                     background-color: rgba(0,0,0,.6);
+                    // width: 150px;
                 }
                 .media-body {
                     padding: 1rem;
                     padding-bottom: 0.5rem;
                     background-color: rgba(255,255,255,.95);
                     border: 1px solid rgba(0,0,0,.125);
-
+                    // @include media-breakpoint-up(lg) {
+                    //     width: 248px !important;
+                    // }
+                    // width: 62%;
                 }
                 .media-object {
                     margin-bottom: 3rem;
+                    @include media-breakpoint-up(sm) {
+                        padding: 0 22px; // Make the right side 150px at all sizes
+                    }
                 }
             }
             .summary {
                 margin-bottom: 0;
                 font-size: .75rem;
-                max-height: 5rem;
+                max-height: 5.5rem;
                 overflow: hidden;
 
                 &.hidden-md-up {
@@ -64,7 +71,6 @@
             padding-right: .6em;
             padding-left: .6em;
             padding-top: .1em;
-            margin-top: 1rem;
             border-radius: 10rem;
         }
     }
