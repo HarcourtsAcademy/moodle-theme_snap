@@ -18,7 +18,7 @@
  * Snap event hooks.
  *
  * @package   theme_snap
- * @copyright Copyright (c) 2015 Moodlerooms Inc. (http://www.moodlerooms.com)
+ * @copyright Copyright (c) 2015 Blackboard Inc. (http://www.blackboard.com)
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
@@ -78,5 +78,25 @@ $observers = array(
     array (
         'eventname' => '\core\event\course_module_completion_updated',
         'callback'  => '\theme_snap\event_handlers::course_module_completion_updated'
-    )
+    ),
+
+    // User updated event for Profile based branding.
+    array (
+        'eventname' => '\core\event\user_updated',
+        'callback'  => '\theme_snap\event_handlers::user_updated'
+    ),
+
+    // User enrolment handlers.
+    array (
+        'eventname' => '\core\event\role_assigned',
+        'callback'  => '\theme_snap\event_handlers::role_assigned'
+    ),
+    array (
+        'eventname' => '\core\event\role_unassigned',
+        'callback'  => '\theme_snap\event_handlers::role_unassigned'
+    ),
+    array (
+        'eventname'   => '\core\event\user_enrolment_deleted',
+        'callback'    => '\theme_snap\event_handlers::user_enrolment_deleted',
+    ),
 );

@@ -15,7 +15,7 @@
     along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 }}
 {{!
-    @template core/login
+    @template core/loginform
 
     Moodle template for the login page.
 
@@ -40,6 +40,7 @@
     * errorformatted - Formatted error,
     * logourl - Flag, logo url,
     * sitename - Name of site.
+    * logintoken - Random token to protect login request.
 
     Example context (json):
     {
@@ -90,6 +91,7 @@
         "errorformatted": "",
         "logourl": false,
         "sitename": "Beer & Chips"
+        "logintoken": "randomstring"
     }
 }}
 
@@ -109,15 +111,8 @@
         </div>
     {{/error}}
 
-    {{! START ACADEMY PATHCH M#060 Customise Moodlerooms Snap theme }}
-    <p class="loginmessage">
-    {{#hasinstructions}}<div class="text-white">{{{instructions}}}</div>{{/hasinstructions}}
-    {{^hasinstructions}}<div class="text-center text-white">Login using your HarcourtsOne or Academy Account</div>{{/hasinstructions}}
-    </p>
-    <style>.js-only.snap-login {display: none;}</style>
-    {{! END ACADEMY PATHCH M#060 }}
-
-    <form action="{{loginurl}}" method="post" id="login" {{^passwordautocomplete}}autocomplete="off"{{/passwordautocomplete}}>
+    <form action="{{loginurl}}" method="post" id="login" {{^passwordautocomplete}}autocomplete="off"{{/passwordautocomplete}} class="snap-custom-form">
+        <input type="hidden" name="logintoken" value="{{logintoken}}">
         <input id="anchor" type="hidden" name="anchor" value="">
         <script>document.getElementById('anchor').value = location.hash;</script>
 
@@ -148,11 +143,20 @@
         <div class="potentialidplist">
             {{#identityproviders}}
                 <div class="potentialidp">
-                    <a href="{{url}}" title={{#quote}}{{name}}{{/quote}}>{{#icon}}{{>core/pix_icon}}{{/icon}}{{name}}</a>
+                    <a href="{{url}}" title={{#quote}}{{name}}{{/quote}}>
+                        {{#iconurl}}
+                            <img class="auth-icon" src="{{iconurl}}"/>
+                        {{/iconurl}}
+                        {{^iconurl}}
+                            {{#pix}} /i/permissions, core {{/pix}}
+                        {{/iconurl}}
+                        {{name}}
+                    </a>
                 </div>
             {{/identityproviders}}
         </div>
     {{/hasidentityproviders}}
+
 </div>
 
 {{#hasinstructions}}
@@ -181,7 +185,6 @@
         </div>
     </div>
 {{/hasinstructions}}
-
 {{#cansignup}}
     <div class="snap-login">
         <h5>{{#str}}firsttime{{/str}}</h5>
@@ -216,4 +219,8 @@
         {{/autofocusform}}
     {{/error}}
     });
+
+
+
 {{/js}}
+

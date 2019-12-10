@@ -6,6 +6,8 @@
  * Global search.
  */
 
+/* stylelint-disable declaration-no-important*/
+
 #mr-nav .search-input-wrapper {
     padding: .5em;
     padding-bottom: 0;
@@ -16,10 +18,19 @@
         width: auto;
         height: auto;
         color: $nav-color;
+        margin: 0 0;
     }
     // Height for search input.
     form > input {
         height: auto;
+        padding-left: 0;
+        padding-right: 0;
+        border-left: 0;
+        border-right: 0;
+    }
+    form.search-input-form.expanded > input {
+        margin-left: 1em;
+        margin-top: -4px;
     }
 }
 
@@ -113,6 +124,9 @@
     .popover-region-content-container {
         max-height: 400px;
         overflow-y: scroll;
+        a.context-link {
+            outline: none;
+        }
     }
 
     // Override core hover colours.
@@ -132,6 +146,25 @@
 }
 
 /**
+ * Intellicart plugin shopping cart.
+ */
+#nav-intellicart-popover-container {
+    display: inline-block;
+    float: none;
+
+    .icon.fa-shopping-cart {
+        font-size: 24px;
+        width: auto;
+        height: auto;
+        color: $nav-color;
+    }
+}
+
+#mr-nav .popover-region-container .intellicart-footer a {
+    color: white;
+}
+
+/**
  * Video js filter.
  */
 
@@ -145,16 +178,10 @@
         width: 4rem;
         border-radius: 100%;
         border-color: transparent;
-        background-color: rgba($brand-primary, .7);
-
-        &:focus {
-            background-color: $brand-primary;
-        }
     }
 
     &:hover {
         .vjs-big-play-button {
-            background-color: $brand-primary;
             border-color: transparent;
         }
     }
@@ -212,12 +239,31 @@
             min-height: 100px;
         }
 
+        .assign-intro {
+            max-width: 100%;
+            padding-bottom: 2em;
+            word-wrap: break-word
+        }
+
         .groupselector,
         .assign-grading-summary,
         .assign-submission-data {
             @include make-row();
             @include make-col(4);
             float: right;
+            // Undo make-col margins.
+            margin-left: 0;
+            margin-right: 0;
+            .plugincontentsummary {
+                width: 100%;
+            }
+        }
+        .assign-grading-summary,
+        .assign-submission-data,
+        .groupselector {
+            margin-top: 0;
+            margin-left: 1em;
+            width: calc(33.33% - 1em);
         }
     }
 
@@ -229,6 +275,9 @@
         background-color: $gray-lighter;
         font-family: $font-family-system;
     }
+    .submissionsdata {
+        width: 100%;
+    }
     // Add an indicator of progress for submissions.
     .submissions-status {
         border-bottom: .5em solid #999;
@@ -236,10 +285,44 @@
         margin-bottom: 1em;
     }
 
+    .submission-status-row {
+        display: flex;
+        span:nth-of-type(1) {
+            width: 76.66%;
+        }
+        span:nth-of-type(2) {
+            width: 33.33%;
+            text-align: right;
+        }
+    }
+
     .submissions-line {
         background-color: $brand-success;
         height: .5em;
         margin-bottom: -1.5em; // Height + submissions-status padding.
+    }
+
+    .plugin-submission-title {
+        width: 100%;
+    }
+
+    .statusdata, .gradingdata, .lastmodified {
+        font-size: 0.8em;
+        span {
+            margin-left: 0.5em;
+        }
+        margin-bottom: 1em;
+    }
+}
+
+.assign-submission-data a.btn {
+    margin: 1em 1em;
+}
+
+.needsgradingdata {
+    margin-right: 1em;
+    .badge {
+        margin-left: 0.25em;
     }
 }
 
@@ -261,13 +344,44 @@
     min-width: 1em;
 }
 
-.path-mod-assign [data-region="user-info"] {
-    h4 {
-        line-height: 1rem;
+.path-mod-assign {
+    [data-region="user-info"] {
+        h4 {
+            line-height: 1rem;
+        }
+        .img-rounded {
+            height: 40px;
+            border-radius: 100%;
+        }
     }
-    .img-rounded {
-        height: 40px;
-        border-radius: 100%;
+    [data-region="user-selector"] .alignment {
+        [data-region="input-field"] .form-control {
+            max-width: 255px;
+        }
+    }
+    #page-content [data-region="grade-panel"] .popout [data-region="popout-button"] img {
+        max-width: none;
+    }
+    [data-region="grade-panel"] .mform .fitem {
+        &:hover {
+            background-color: $modal-content-bg;
+        }
+        .felement {
+            float: none;
+            margin-top: .25rem;
+        }
+        &.has-popout {
+            padding: $spacer / 2;
+
+            &.popout {
+                // When actually popped out.
+                padding: $card-spacer-y $card-spacer-x;
+            }
+        }
+        div.form-inline.felement {
+            display: inline-block;
+        }
+
     }
 }
 
@@ -275,35 +389,13 @@
     min-width: 150px;
 }
 
-.path-mod-assign #page-content [data-region="grade-panel"] .popout [data-region="popout-button"] img {
-    max-width: none;
-}
-
-.path-mod-assign [data-region="grade-panel"] .mform .fitem:hover {
-    background-color: $modal-content-bg;
-}
-
-.path-mod-assign [data-region="grade-panel"] .mform .fitem .felement {
-    float: none;
-    margin-top: .25rem;
-}
-
-.path-mod-assign [data-region="grade-panel"] .fitem.has-popout {
-    padding: $spacer / 2;
-
-    &.popout {
-        // When actually popped out.
-        padding: $card-spacer-y $card-spacer-x;
-    }
-}
-
 /**
  * Survey module.
  * Fix black text on save.
  */
 #page-mod-survey-save div[role="main"] h2 {
-    padding-top:0.5em;
-    color:#fff;
+    padding-top: 0.5em;
+    color: #fff;
 }
 
 /**
@@ -314,7 +406,8 @@
         .fitem .felement.fgroup span {
             display: inline-block;
         }
-        #fgroup_id_timestarted_grp, #fgroup_id_timecompleted_grp {
+        #fgroup_id_timestarted_grp,
+        #fgroup_id_timecompleted_grp {
             .felement.fgroup span {
                 display: block;
             }
@@ -322,28 +415,40 @@
     }
 }
 
-.path-blocks-conduit .widgets {
-    white-space: normal;
-
-    input {
-        display: block;
-        margin: 8px 0 0 5px;
+.path-blocks-conduit {
+    .yui-dt table td {
+        vertical-align: middle;
+        &.yui-dt-col-action {
+            padding-right: 0;
+            padding-left: 0;
+            a {
+                margin-right: 0;
+                margin-left: 0.1em;
+                i {
+                    margin-right: 0;
+                }
+            }
+        }
     }
 
-    a {
-        display: block;
-        margin-top: -1.5em;
+    .widgets {
+        white-space: normal;
+
+        input {
+            display: inline-block;
+            margin: 8px 0 0 5px;
+        }
     }
 }
 
 .edit_pages_box span.label {
-  color: $body-color;
+    color: $body-color;
 }
 
 /**
  * Stop rubric mform from being positioned inefficiently in dialog.
  */
-#local-joulegrader-gradepane-panel .mform{
+#local-joulegrader-gradepane-panel .mform {
     max-width: 100%;
     margin: 0 auto;
 }
@@ -364,17 +469,18 @@
         }
     }
 
-    .card-block {
-        padding :0;
-    }
-
     // Hide next/previous image when not a link.
-    .navimages{
+    .navimages {
         img {
             visibility: hidden;
         }
         a img {
             visibility: visible;
+        }
+        .bookprev:after,
+        .booknext:before {
+            content: attr(title);
+            font-family: $font-family-base;
         }
     }
     // Style next and previous navigation.
@@ -389,11 +495,7 @@
     .bookprev {
         text-align: left;
     }
-    .bookprev:after,
-    .booknext:before {
-        content: attr(title);
-        font-family: $font-family-base;
-    }
+
 }
 
 // Book mod grid.
@@ -417,6 +519,9 @@
 #page-mod-book-print {
     font-size: 18px !important;
     font-family: $font-family-serif !important;
+    p, div.book_chapter {
+        margin-right: 3em;
+    }
 }
 
 /**
@@ -454,7 +559,7 @@
     }
     // Improve edit pages form - tables for layout :(
     // NOTE - lots of inline styles in lesson, so !important needed.
-    .edit_pages_box{
+    .edit_pages_box {
         // Remove striping.
         tr {
             background-color: white !important;
@@ -493,7 +598,7 @@
         }
 
         /* Put options on seperate lines. */
-        .fgroup>span {
+        .fgroup > span {
             display: table; // SHAME - hack for lessons css/html display of radio buttons.
             label p {
                 display: inline; // SHAME - fix for p tag in each label.
@@ -540,4 +645,21 @@
 
 .completion-progresscell {
     text-align: center;
+}
+
+body.pagelayout-admin.path-mod {
+    // Hide mod forms until js kicks in.
+    .mform {
+        opacity: 0;
+    }
+    &.snap-js-loaded {
+        .mform {
+            opacity: 1;
+        }
+    }
+    &:not(.snap-js-loaded) #region-main:before {
+        @include ajaxing(block, relative, 200px, 20px);
+        background-image: none !important;
+        margin: 2em auto;
+    }
 }

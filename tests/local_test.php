@@ -18,20 +18,21 @@
  * Local Tests
  *
  * @package   theme_snap
- * @copyright Copyright (c) 2015 Moodlerooms Inc. (http://www.moodlerooms.com)
+ * @copyright Copyright (c) 2015 Blackboard Inc. (http://www.blackboard.com)
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
 namespace theme_snap\tests;
 
 use theme_snap\local;
+use theme_snap\renderables\course_card;
 use theme_snap\snap_base_test;
 
 defined('MOODLE_INTERNAL') || die();
 
 /**
  * @package   theme_snap
- * @copyright Copyright (c) 2015 Moodlerooms Inc. (http://www.moodlerooms.com)
+ * @copyright Copyright (c) 2015 Blackboard Inc. (http://www.blackboard.com)
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class theme_snap_local_test extends snap_base_test {
@@ -295,6 +296,7 @@ class theme_snap_local_test extends snap_base_test {
         $message->fullmessagehtml   = '<p>message body</p>';
         $message->smallmessage      = 'small message';
         $message->notification      = '0';
+        $message->courseid = SITEID;
 
         message_send($message);
         $aftersent = time();
@@ -308,6 +310,13 @@ class theme_snap_local_test extends snap_base_test {
 
         $actual = local::get_user_messages($userto->id, $aftersent);
         $this->assertCount(0, $actual);
+
+        \core_message\api::mark_all_messages_as_read($userto->id);
+        $actual = local::get_user_messages($userto->id);
+        $this->assertCount(1, $actual);
+        foreach ($actual as $msg) {
+            $this->assertEquals(0, $msg->unread);
+        }
     }
 
 
@@ -332,6 +341,7 @@ class theme_snap_local_test extends snap_base_test {
         $message->fullmessagehtml   = '<p>message body</p>';
         $message->smallmessage      = 'small message';
         $message->notification      = '0';
+        $message->courseid = SITEID;
 
         $messageid = message_send($message);
 
@@ -341,8 +351,7 @@ class theme_snap_local_test extends snap_base_test {
         $actual = local::get_user_messages($userto->id);
         $this->assertCount(1, $actual);
 
-        $todelete = $DB->get_record('message', ['id' => $messageid]);
-        message_delete_message($todelete, $userto->id);
+        \core_message\api::delete_message($userto->id, $messageid);
         $actual = local::get_user_messages($userto->id);
         $this->assertCount(0, $actual);
     }
@@ -366,6 +375,7 @@ class theme_snap_local_test extends snap_base_test {
         $message->fullmessagehtml   = '<p>message body</p>';
         $message->smallmessage      = 'small message';
         $message->notification      = '0';
+        $message->courseid = SITEID;
 
         message_send($message);
 
@@ -1094,5 +1104,207 @@ class theme_snap_local_test extends snap_base_test {
         $course = $dg->create_course();
         $actual = local::course_coverimage_url($course->id);
         $this->assertFalse($actual);
+    }
+
+    public function test_get_profile_based_branding() {
+        global $DB;
+
+        $this->resetAfterTest();
+
+        $generator = $this->getDataGenerator();
+        $user = $generator->create_user();
+        $this->setUser($user);
+
+        // Setting is not enabled.
+        $this->assertFalse(local::get_profile_based_branding_class($user));
+
+        \set_config('pbb_enable', '1', 'theme_snap');
+
+        // Default field is department but nothing has been set.
+        $this->assertFalse(local::get_profile_based_branding_class($user));
+
+        $user->department = 'Marketing';
+        $DB->update_record('user', $user);
+
+        // First time, cache gets set and it should work.
+        $this->assertEquals('snap-pbb-marketing', local::get_profile_based_branding_class($user));
+
+        $user->department = 'Super Enterprise Sales';
+        $DB->update_record('user', $user);
+
+        // Even when changing user data using the database, if the event is not triggered, the value should be cached.
+        $this->assertEquals('snap-pbb-marketing', local::get_profile_based_branding_class($user));
+
+        \core\event\user_updated::create_from_userid($user->id)->trigger();
+
+        // Cache has been cleared, so the new value should match the one which was updated.
+        $this->assertEquals('snap-pbb-super-enterprise-sales', local::get_profile_based_branding_class($user));
+
+        // Filling up database with custom field data.
+        $catid = $DB->insert_record('user_info_category', (object) [
+            'name'       => 'Favourite things'
+        ]);
+        $fieldid = $DB->insert_record('user_info_field', (object) [
+            'shortname'  => 'favfood',
+            'name'       => 'Favourite food',
+            'categoryid' => $catid
+        ]);
+        $DB->insert_record('user_info_data', (object) [
+            'data'       => 'Banana split',
+            'fieldid'    => $fieldid,
+            'userid'     => $user->id
+        ]);
+
+        // Changing the used field to the custom field.
+        \set_config('pbb_field', 'profile|' . $fieldid, 'theme_snap');
+        local::clean_profile_based_branding_cache();
+
+        // Custom field is set as new value.
+        $this->assertEquals('snap-pbb-banana-split', local::get_profile_based_branding_class($user));
+    }
+
+    public function test_clean_course_card_bg_image_cache() {
+        $this->resetAfterTest();
+        list ($student, $teacher, $course, $group) = $this->course_group_user_setup();
+
+        $context = \context_course::instance($course->id);
+        $this->fake_course_image_setting_upload('bpd_bikes_1380px.jpg', $context);
+        $originalfile = local::course_coverimage($course->id);
+        local::set_course_card_image($context, $originalfile);
+
+        // Cache is filled when course card is created.
+        $ccard = new course_card($course);
+
+        /** @var \cache_application $cache */
+        $cache = \cache::make('theme_snap', 'course_card_bg_image');
+        $bgimage = $cache->get($context->id);
+        $this->assertEquals("background-image: url($bgimage);", $ccard->imagecss);
+
+        // Clearing caches.
+        local::course_card_clean_up($context);
+
+        $this->assertFalse($cache->get($context->id));
+
+        // Cache is filled when course card is created.
+        $ccard = new course_card($course);
+
+        $fixture = 'bpd_bikes_1381px.jpg';
+        $this->fake_course_image_setting_upload($fixture, $context);
+        $originalfile = local::course_coverimage($course->id);
+
+        // Cache is cleared when a new card image is set.
+        local::set_course_card_image($context, $originalfile);
+
+        $this->assertFalse($cache->get($context->id));
+
+        // Cache is filled when course card is created.
+        $ccard = new course_card($course);
+
+        $bgimage = $cache->get($context->id);
+        $this->assertNotFalse(strstr($bgimage, $fixture));
+
+        // Cache is used next time.
+        $ccard = new course_card($course);
+        $url = local::course_card_image_url($course->id);
+
+        $this->assertEquals("background-image: url($url);", $ccard->imagecss);
+    }
+
+    public function test_clean_course_card_teacher_avatar_cache() {
+        global $DB, $CFG;
+
+        $this->resetAfterTest();
+        /** @var \cache_application $avatarcache */
+        $avatarcache = \cache::make('theme_snap', 'course_card_teacher_avatar');
+        /** @var \cache_application $indexcache */
+        $indexcache = \cache::make('theme_snap', 'course_card_teacher_avatar_index');
+        list ($student, $teacher, $course, $group) = $this->course_group_user_setup();
+        $teachers = [$teacher];
+        $students = [$student];
+        $editingteachers = [];
+
+        $editingrole = $DB->get_record('role', ['shortname' => 'editingteacher']);
+        $teacherrole = $DB->get_record('role', ['shortname' => 'teacher']);
+
+        $CFG->coursecontact = $editingrole->id. ','. $teacherrole->id;
+
+        // Cache is filled when course card is created.
+        $ccard = new course_card($course);
+        // 1 teacher, 1 avatar.
+        $this->assertCount(1, $ccard->visibleavatars);
+
+        $userctxidx = $indexcache->get('idx');
+
+        $context = \context_course::instance($course->id);
+        $avatars = $avatarcache->get($context->id);
+
+        $this->assertCount(1, $userctxidx);
+        $this->assertCount(1, $userctxidx[$teacher->id]);
+        $this->assertCount(1, $avatars);
+
+        // Cache is used next time.
+        $ccard = new course_card($course);
+        $this->assertCount(1, $ccard->visibleavatars);
+        $this->assertCount(0, $ccard->hiddenavatars);
+        $this->assertFalse($ccard->showextralink);
+
+        // This enrols 10 more teachers and 10 more editing teachers, so 21 course contacts in total.
+        $this->create_extra_users($course->id, $students, $teachers, $editingteachers);
+
+        $this->assertFalse($avatarcache->get($context->id));
+
+        // Cache is filled when course card is created.
+        $ccard = new course_card($course);
+        $this->assertCount(4, $ccard->visibleavatars);
+        $this->assertCount(17, $ccard->hiddenavatars);
+        $this->assertTrue($ccard->showextralink);
+
+        $this->assertNotFalse($avatarcache->get($context->id));
+
+        // Cache is used next time.
+        $ccard = new course_card($course);
+        $this->assertCount(4, $ccard->visibleavatars);
+        $this->assertCount(17, $ccard->hiddenavatars);
+        $this->assertTrue($ccard->showextralink);
+
+        // Unenrolment causes indexes to be recalculated.
+        $menrol = enrol_get_plugin('manual');
+        $enrol = $DB->get_record('enrol', array('courseid' => $course->id, 'enrol' => 'manual'), '*', MUST_EXIST);
+        $menrol->unenrol_user($enrol, $teacher->id);
+
+        $this->assertFalse($avatarcache->get($context->id));
+
+        // Cache is filled when course card is created.
+        $ccard = new course_card($course);
+        $this->assertCount(4, $ccard->visibleavatars);
+        $this->assertCount(16, $ccard->hiddenavatars);
+        $this->assertTrue($ccard->showextralink);
+
+        $this->assertNotFalse($avatarcache->get($context->id));
+
+        // Cache is used next time.
+        $ccard = new course_card($course);
+        $this->assertCount(4, $ccard->visibleavatars);
+        $this->assertCount(16, $ccard->hiddenavatars);
+        $this->assertTrue($ccard->showextralink);
+
+        // User deletion causes indexes to be recalculated.
+        delete_user($editingteachers[0]);
+
+        $this->assertFalse($avatarcache->get($context->id));
+
+        // Cache is filled when course card is created.
+        $ccard = new course_card($course);
+        $this->assertCount(4, $ccard->visibleavatars);
+        $this->assertCount(15, $ccard->hiddenavatars);
+        $this->assertTrue($ccard->showextralink);
+
+        $this->assertNotFalse($avatarcache->get($context->id));
+
+        // Cache is used next time.
+        $ccard = new course_card($course);
+        $this->assertCount(4, $ccard->visibleavatars);
+        $this->assertCount(15, $ccard->hiddenavatars);
+        $this->assertTrue($ccard->showextralink);
     }
 }

@@ -3,29 +3,33 @@
  *
  */
 
+/* stylelint-disable declaration-no-important*/
+
 .filemanager {
     font-family: $font-family-system;
+    max-width: 40em;
 
     .dndupload-message {
         font-size: small;
     }
 
-    /* START Academy Patch M#060 Customise Moodlerooms Snap theme
-    .fp-btn-mkdir,
-    .fp-btn-download {
-        @include sr-only();
-    }
-    END Academy Patch M#060 */
-
     // Hide :
     // pathbar (dir structure),
-    // viewbar (view options),
     // restrictions (max file size etc)
     .fp-pathbar,
-    .fp-viewbar,
     .fp-restrictions {
         display: none;
     }
+
+    .fp-content {
+        border: 2px dashed #bbb;
+    }
+}
+
+// Make sure accepted file type information is on its own row and positioned nicely.
+div[data-fieldtype=filemanager] > p:nth-of-type(1) {
+    margin-top:1em;
+    width: 100%;
 }
 
 // Make filenames more reabable.
@@ -37,20 +41,15 @@
     margin-top: 0;
 }
 
-// Viewbar is shown on these pages.
-#page-mod-resource-mod, // Academy Patch M#060 Customise Moodlerooms Snap theme
-#page-user-files,
-#local-joulegrader-gradepane,
-#page-backup-backupfilesedit {
-    .filemanager .fp-viewbar {
-        display: block;
-    }
-}
-
 // Code below moved from other scss files.
 
 .chooserdialogue .moodle-dialogue-wrap .moodle-dialogue-bd {
     background: $body-bg;
+}
+
+// Fix for file picker in Snap, not showing all the repositories.
+.moodle-dialogue-base .moodle-dialogue.filepicker  {
+    overflow: scroll;
 }
 
 .jschooser .choosercontainer #chooseform .alloptions {
@@ -96,6 +95,10 @@
     background-image: url("[[pix:resource|icon]]");
     background-size: 60px 60px;
     margin-top: 10px;
+}
+
+#page-badges-newbadge .dndupload-arrow {
+    cursor: default;
 }
 
 .filepicker-filelist .filepicker-container,

@@ -27,7 +27,7 @@ require_once($CFG->dirroot.'/course/lib.php');
 /**
  * Course service class.
  * @author    gthomas2
- * @copyright Copyright (c) 2016 Moodlerooms Inc. (http://www.moodlerooms.com)
+ * @copyright Copyright (c) 2016 Blackboard Inc. (http://www.blackboard.com)
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class course {
@@ -174,7 +174,7 @@ class course {
 
         $userid = $userid !== null ? $userid : $USER->id;
 
-        $favorites = $this->favorites($userid, false, $fromcache);
+        $favorites = $this->favorites($userid, $fromcache);
         return !empty($favorites) && !empty($favorites[$courseid]);
     }
 
@@ -247,7 +247,7 @@ class course {
         $course = $this->coursebyshortname($courseshortname);
         $userid = $userid !== null ? $userid : $USER->id;
 
-        $favorited = $this->favorited($course->id, $userid);
+        $favorited = $this->favorited($course->id, $userid, false);
         if ($on) {
             if (!$favorited) {
                 $data = (object) [
@@ -287,8 +287,8 @@ class course {
      * @return course_card (renderable)
      */
     public function cardbyshortname($shortname) {
-        $course = $this->coursebyshortname($shortname, 'id');
-        return new course_card($course->id);
+        $course = $this->coursebyshortname($shortname);
+        return new course_card($course);
     }
 
     /**
@@ -322,8 +322,9 @@ class course {
 
         $changedsectionhtml = [];
         $changedsections = array_merge($newlyavailablesections, $newlyunavailablesections);
+        $format = course_get_format($course);
+        $course = $format->get_course();
         if (!empty($changedsections)) {
-            $format = course_get_format($course);
             $formatrenderer = $format->get_renderer($PAGE);
             foreach ($changedsections as $sectionnumber) {
                 $section = $modinfo->get_section_info($sectionnumber);
@@ -357,7 +358,7 @@ class course {
         $unavailablesections = implode(',', $unavailablesections);
         $unavailablemods = implode(',', $unavailablemods);
 
-        $toc = new course_toc($course);
+        $toc = new course_toc($course, $format);
 
         // If the course format is different from topics or weeks then the $toc would have some empty values.
         $validformats = ['weeks', 'topics'];

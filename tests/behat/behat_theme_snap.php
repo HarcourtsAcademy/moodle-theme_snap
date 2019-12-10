@@ -19,7 +19,7 @@
  *
  * @package   theme_snap
  * @category  test
- * @copyright Copyright (c) 2015 Moodlerooms Inc. (http://www.moodlerooms.com)
+ * @copyright Copyright (c) 2015 Blackboard Inc. (http://www.blackboard.com)
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
@@ -37,21 +37,79 @@ use Behat\Gherkin\Node\TableNode,
  *
  * @package   theme_snap
  * @category  test
- * @copyright Copyright (c) 2015 Moodlerooms Inc. (http://www.moodlerooms.com)
+ * @copyright Copyright (c) 2015 Blackboard Inc. (http://www.blackboard.com)
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class behat_theme_snap extends behat_base {
 
     /**
-     * Checks if running in a Moodlerooms system, skips the test if not.
+     * Ensures that the provided node is visible and we can interact with it.
      *
-     * @Given /^I am using Moodlerooms$/
+     * @throws ExpectationException
+     * @param NodeElement $node
+     * @return void Throws an exception if it times out without the element being visible
+     */
+    protected function ensure_node_not_visible($node) {
+
+        if (!$this->running_javascript()) {
+            return;
+        }
+
+        // Exception if it timesout and the element is still there.
+        $msg = 'The "' . $node->getXPath() . '" xpath node is visible and it should be hidden';
+        $exception = new ExpectationException($msg, $this->getSession());
+
+        // It will stop spinning once the isVisible() method returns false.
+        $this->spin(
+            function($context, $args) {
+                if (!$args->isVisible()) {
+                    return true;
+                }
+                return false;
+            },
+            $node,
+            self::EXTENDED_TIMEOUT,
+            $exception,
+            true
+        );
+    }
+
+    /**
+     * Ensures that the provided element is not visible or does not exist.
+     *
+     * @throws ExpectationException
+     * @param string $element
+     * @param string $selectortype
      * @return void
      */
-    public function i_am_using_moodlerooms() {
+    protected function ensure_element_not_visible($element, $selectortype) {
+
+        if (!$this->running_javascript()) {
+            return;
+        }
+
+        try {
+            $node = $this->get_selected_node($selectortype, $element);
+        } catch (ElementNotFoundException $e) {
+            // Element is not found - that's good enough!
+            return;
+        }
+
+        $this->ensure_node_not_visible($node);
+
+        return $node;
+    }
+
+    /**
+     * Checks if running in a Blackboard Open LMS system, skips the test if not.
+     *
+     * @Given /^I am using Blackboard Open LMS$/
+     * @return void
+     */
+    public function i_am_using_blackboard_open_lms() {
         global $CFG;
         if (!file_exists($CFG->dirroot.'/local/mrooms')) {
-            throw new SkippedException("Skipping tests of Moodlerooms specific functionality");
+            throw new SkippedException("Skipping tests of Blackboard Open LMS specific functionality");
         }
     }
 
@@ -65,6 +123,18 @@ class behat_theme_snap extends behat_base {
      */
     public function i_wait_until_is_visible($element, $selectortype) {
         $this->ensure_element_is_visible($element, $selectortype);
+    }
+
+    /**
+     * Waits until the provided element selector is not visible.
+     *
+     * @Given /^I wait until "(?P<element_string>(?:[^"]|\\")*)" "(?P<selector_string>[^"]*)" is not visible$/
+     * @param string $element
+     * @param string $selectortype
+     * @return void
+     */
+    public function i_wait_until_not_visible($element, $selectortype) {
+        $this->ensure_element_not_visible($element, $selectortype);
     }
 
     protected function upload_file($fixturefilename, $selector) {
@@ -188,6 +258,14 @@ class behat_theme_snap extends behat_base {
             $node = $this->find('css', '#snap-pm-close');
             $node->click();
         }
+    }
+
+    /**
+     * This function will wait an instant for ajax calls to finish.
+     * @Given /^I wait for the personal menu to be loaded$/
+     */
+    public function i_wait_personal_menu_to_load() {
+        $this->getSession()->wait(2000, '(jQuery.active === 0)'); // Time in milliseconds.
     }
 
     /**
@@ -399,6 +477,24 @@ class behat_theme_snap extends behat_base {
     public function i_restrict_asset_by_date($assettitle, $date) {
         $datetime = strtotime($date);
         $this->i_follow_asset_link($assettitle);
+        $this->execute('behat_general::i_click_on', ['#admin-menu-trigger', 'css_element']);
+        $this->i_wait_until_is_visible('.block_settings.state-visible', 'css_element');
+        $this->execute('behat_navigation::i_navigate_to_node_in', ['Edit settings', 'Assignment administration']);
+        $this->add_date_restriction($datetime, 'Save and return to course');
+    }
+
+    /**
+     * Restrict an assignment by date.
+     * @param string $assigntitle
+     * @param string $date
+     * @Given /^I restrict assignment "(?P<assigntitle_string>(?:[^"]|\\")*)" by date to "(?P<date_string>(?:[^"]|\\")*)"$/
+     */
+    public function i_restrict_assign_by_date($assigntitle, $date) {
+        $datetime = strtotime($date);
+        $xpath = "//li[contains(@class, 'modtype_assign')]//a/span[contains(text(), '{$assigntitle}')]";
+        $this->execute('behat_general::i_wait_seconds', [1]);
+        $this->execute('behat_general::i_click_on', [$xpath, 'xpath_element']);
+        $this->i_wait_until_is_visible('.assign-intro', 'css_element');
         $this->execute('behat_general::i_click_on', ['#admin-menu-trigger', 'css_element']);
         $this->i_wait_until_is_visible('.block_settings.state-visible', 'css_element');
         $this->execute('behat_navigation::i_navigate_to_node_in', ['Edit settings', 'Assignment administration']);
@@ -1575,5 +1671,49 @@ class behat_theme_snap extends behat_base {
         $xpath = $this->meta_assign_xpath($name);
         $xpath .= "/a[contains(text(), 'Feedback available')]";
         $this->ensure_element_does_not_exist($xpath, 'xpath_element');
+    }
+
+    /**
+     * Opens index login page.
+     *
+     * @Given /^I am on login page$/
+     */
+    public function i_am_on_login_page() {
+        $this->getSession()->visit($this->locate_path('/login/index.php'));
+    }
+
+    /**
+     * @Given /^I check element "(?P<element_string>(?:[^"]|\\")*)" has class "(?P<class_string>(?:[^"]|\\")*)"$/
+     * @param string $element
+     * @param string $class
+     * @throws Exception
+     */
+    public function i_check_element_has_class($element, $class) {
+        $session = $this->getSession();
+        $elementhasclass = $session->getDriver()->evaluateScript("$('".$element."').hasClass('".$class."');");
+        if (!$elementhasclass) {
+            throw new Exception("Class ".$class." was not found in element ".$element.".");
+        }
+    }
+    /**
+     * Purge snap caches.
+     *
+     * @Given /^I purge snap caches$/
+     */
+    public function i_purge_snap_caches() {
+        theme_reset_all_caches();
+    }
+
+    /**
+     * Add a discussion on a forum.
+     *
+     * @Given /^I post to the discussion:$/
+     * @param TableNode $table
+     */
+    public function i_post_this_to_the_discussion(TableNode $table) {
+        // Fill form and post.
+        $this->execute('behat_forms::i_set_the_following_fields_to_these_values', $table);
+        $this->execute('behat_forms::press_button', get_string('posttoforum', 'forum'));
+        $this->execute('behat_general::i_wait_to_be_redirected');
     }
 }

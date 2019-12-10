@@ -152,7 +152,7 @@ class wsparam_notype {
 
 /**
  * Tests for webservice definition healper.
- * @author    Guy Thomas <gthomas@moodlerooms.com>
+ * @author    Guy Thomas <osdev@blackboard.com>
  * @copyright Copyright (c) 2016 Blackboard Inc.
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
@@ -318,7 +318,8 @@ EOF;
     }
 
     public function test_convert_ws_param_no_type() {
-        $this->setExpectedException('coding_exception', 'Type not specified');
+        $this->expectException('coding_exception');
+        $this->expectExceptionMessage('Type not specified');
         new definition_helper_testable(new wsparam_notype());
     }
 

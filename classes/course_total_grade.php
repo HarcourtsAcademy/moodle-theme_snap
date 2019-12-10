@@ -16,7 +16,7 @@
 
 /**
  * For getting course total grades.
- * @author    Guy Thomas <gthomas@moodlerooms.com>
+ * @author    Guy Thomas <osdev@blackboard.com>
  * @copyright Copyright (c) 2017 Blackboard Inc.
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
@@ -34,7 +34,7 @@ require_once($CFG->dirroot.'/grade/report/overview/lib.php');
 
 /**
  * For getting course total grades.
- * @author    Guy Thomas <gthomas@moodlerooms.com>
+ * @author    Guy Thomas <osdev@blackboard.com>
  * @copyright Copyright (c) 2017 Blackboard Inc.
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
@@ -167,9 +167,9 @@ class course_total_grade extends \grade_report_overview {
         }
 
         // Percentage grade for use with progressbar.js.
-        $percentage = round(grade_format_gradevalue($finalgrade,
-                $coursegrade->grade_item,
-                true, GRADE_DISPLAY_TYPE_PERCENTAGE));
+        $percentage = grade_format_gradevalue($finalgrade,
+            $coursegrade->grade_item,
+            true, GRADE_DISPLAY_TYPE_PERCENTAGE);
 
         $value = grade_format_gradevalue($finalgrade, $coursegrade->grade_item);
         return array("value" => $value, "percentage" => $percentage);

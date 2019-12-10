@@ -25,7 +25,7 @@ require_once($CFG->dirroot.'/mod/assign/locallib.php');
  * These functions are in a class purely for auto loading convenience.
  *
  * @package   theme_snap
- * @copyright Copyright (c) 2015 Moodlerooms Inc. (http://www.moodlerooms.com)
+ * @copyright Copyright (c) 2015 Blackboard Inc. (http://www.blackboard.com)
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class activity {
@@ -313,6 +313,8 @@ class activity {
             list($esql, $params) = get_enrolled_sql(\context_course::instance($courseid), 'mod/assign:submit', 0, true);
             $params['courseid'] = $courseid;
 
+            list($sqlgroupsjoin, $sqlgroupswhere, $groupparams) = self::get_groups_sql($courseid);
+
             $sql = "-- Snap sql
                     SELECT cm.id AS coursemoduleid, a.id AS instanceid, a.course,
                            a.allowsubmissionsfromdate AS opentime, a.duedate AS closetime,
@@ -351,6 +353,7 @@ class activity {
                  LEFT JOIN {grade_grades} gg
                         ON gg.itemid = gi.id
                        AND gg.userid = sb.userid
+                       $sqlgroupsjoin
 
 -- End of join required to make assignments classed as graded when done via gradebook
 
@@ -363,9 +366,10 @@ class activity {
                        )
 
                        AND (a.duedate = 0 OR a.duedate > $since)
+                       $sqlgroupswhere
                  $gradetypelimit
                  GROUP BY instanceid, a.course, opentime, closetime, coursemoduleid ORDER BY a.duedate ASC";
-            $rs = $DB->get_records_sql($sql, $params);
+            $rs = $DB->get_records_sql($sql, array_merge($params, $groupparams));
             $ungraded = array_merge($ungraded, $rs);
         }
 
@@ -407,10 +411,15 @@ class activity {
 
 					  JOIN {quiz_attempts} qa ON qa.quiz = q.id
 					   AND qa.sumgrades IS NULL
+					   AND qa.preview = 0
 
--- Exclude those people who can grade quizzes
+-- Exclude those people who can grade quizzes and suspended users
 
-                     WHERE qa.userid NOT IN ($graderids)
+          		      JOIN {enrol} en ON en.courseid = q.course
+                      JOIN {user_enrolments} ue ON en.id = ue.enrolid
+                       AND qa.userid = ue.userid
+                     WHERE ue.status = 0
+                       AND qa.userid NOT IN ($graderids)
                        AND qa.state = 'finished'
                        AND (q.timeclose = 0 OR q.timeclose > $since)
                   GROUP BY instanceid, q.course, opentime, closetime, coursemoduleid
@@ -463,7 +472,7 @@ class activity {
             'gradetypetext' => GRADE_TYPE_TEXT,
         );
 
-        $sql = 'SELECT iteminstance
+        $sql = 'SELECT DISTINCT iteminstance
                 FROM {grade_items}
                 WHERE courseid = ?
                 AND itemtype = ?
@@ -563,13 +572,23 @@ class activity {
             list($graderids, $params) = get_enrolled_sql(\context_course::instance($courseid), 'moodle/grade:viewall');
             $params['courseid'] = $courseid;
 
+            if ($maintable == 'quiz') {
+                $quizvalidation = "AND sb.preview = 0";
+            } else {
+                $quizvalidation = "";
+            }
             // Get the number of submissions for all $maintable activities in this course.
             $sql = "-- Snap sql
                     SELECT m.id, COUNT(DISTINCT sb.userid) as totalsubmitted
                       FROM {".$maintable."} m
                       JOIN {".$submittable."} sb ON m.id = sb.$mainkey
-                     WHERE m.course = :courseid
+                      JOIN {enrol} en ON en.courseid = m.course
+                      JOIN {user_enrolments} ue ON en.id = ue.enrolid
+                       AND sb.userid = ue.userid
+                     WHERE ue.status = 0
+                       AND m.course = :courseid
                            AND sb.userid NOT IN ($graderids)
+                           $quizvalidation
                            $extraselect
                      GROUP BY m.id";
             $modtotalsbyid[$maintable][$courseid] = $DB->get_records_sql($sql, $params);
@@ -603,6 +622,8 @@ class activity {
             $params['courseid'] = $courseid;
             $params['submitted'] = ASSIGN_SUBMISSION_STATUS_SUBMITTED;
 
+            list($sqlgroupsjoin, $sqlgroupswhere, $groupparams) = self::get_groups_sql($courseid);
+
             // Get the number of submissions for all assign activities in this course.
             $sql = "-- Snap sql
                 SELECT m.id, COUNT(sb.userid) as totalsubmitted
@@ -613,11 +634,13 @@ class activity {
 
                   JOIN ($esql) e
                     ON e.id = sb.userid
+                       $sqlgroupsjoin
 
                  WHERE m.course = :courseid
                        AND sb.status = :submitted
+                       $sqlgroupswhere
                  GROUP by m.id";
-            $modtotalsbyid['assign'][$courseid] = $DB->get_records_sql($sql, $params);
+            $modtotalsbyid['assign'][$courseid] = $DB->get_records_sql($sql, array_merge($params, $groupparams));
         }
         $totalsbyid = $modtotalsbyid['assign'][$courseid];
 
@@ -701,10 +724,15 @@ class activity {
 
 					  JOIN {quiz_attempts} qa ON qa.quiz = q.id
 					   AND qa.sumgrades IS NULL
+					   AND qa.preview = 0
 
--- Exclude those people who can grade quizzes
+-- Exclude those people who can grade quizzes and suspended users
 
-                     WHERE qa.userid NOT IN ($graderids)
+                      JOIN {enrol} en ON en.courseid = q.course
+                      JOIN {user_enrolments} ue ON en.id = ue.enrolid
+                       AND qa.userid = ue.userid
+                     WHERE ue.status = 0
+                       AND qa.userid NOT IN ($graderids)
                        AND qa.state = 'finished'
                        AND q.course = :courseid
                      GROUP BY q.id";
@@ -938,7 +966,7 @@ class activity {
         $tend = $todayts + (YEARSECS / 2);
 
         if ($phpunittest || !isset($eventsbymodinst[$courseid])) {
-            if ($COURSE->id = $courseid) {
+            if ($COURSE->id == $courseid) {
                 $coursesparam = [$courseid => $COURSE];
             } else {
                 $coursesparam = [$courseid => get_course($courseid)];
@@ -1205,6 +1233,7 @@ class activity {
             $usersfilter,
             $groupsfilter,
             $coursesfilter,
+            null,
             $withduration,
             $ignorehidden
         );
@@ -1222,7 +1251,7 @@ class activity {
 
         $calendar = new \calendar_information(0, 0, 0, $tstart);
         $course = get_course(SITEID);
-        $calendar->prepare_for_view($course, $courses);
+        $calendar->set_sources($course, $courses);
 
         $withduration = true;
         $ignorehidden = true;
@@ -1419,7 +1448,7 @@ class activity {
         $tmparr = [];
         foreach ($events as $event) {
             if ($event->timestart >= $todayts) {
-                if ($event->eventtype != 'close' && $event->eventtype != 'due') {
+                if ($event->eventtype != 'close' && $event->eventtype != 'due' && $event->eventtype != 'expectcompletionon') {
                     continue;
                 }
 
@@ -1442,6 +1471,42 @@ class activity {
         $USER = $origuser;
 
         return $eventsobj;
+    }
+
+    /**
+     * Returns the join and where statements required to validate the assignment submissions by groups on a course.
+     * @param integer $courseid
+     * @return array
+     */
+    private static function get_groups_sql($courseid) {
+        global $USER;
+
+        $sqlgroupsjoin = '';
+        $sqlgroupswhere = '';
+        $groupparams = array();
+
+        $course = get_course($courseid);
+        $groupmode = groups_get_course_groupmode($course);
+        $context = \context_course::instance($courseid);
+
+        if ($groupmode == SEPARATEGROUPS and !has_capability('moodle/site:accessallgroups', $context)) {
+            $groupparams['userid'] = $USER->id;
+            $groupparams['courseid2'] = $courseid;
+
+            $sqlgroupsjoin = "
+                    JOIN {groups_members} gm
+                      ON gm.userid = sb.userid
+                    JOIN {groups} g
+                      ON gm.groupid = g.id";
+            $sqlgroupswhere = "
+                     AND gm.groupid
+                      IN (SELECT g.id
+                    FROM {groups} g
+                    JOIN {groups_members} gm ON gm.groupid = g.id
+                   WHERE g.courseid = :courseid2
+                     AND gm.userid = :userid)";
+        }
+        return array($sqlgroupsjoin, $sqlgroupswhere, $groupparams);
     }
 
 }

@@ -2,21 +2,20 @@
 // Conduit
 // -------------------------
 .path-blocks-conduit table thead tr th:nth-child(1) {
-    min-width: 60px;
+    min-width: 93px;
 }
 
 .path-blocks-conduit table tr td .widgets {
     a {
-        display: block;
         margin-top: 0;
     }
 }
 // -------------------------
-// Moodlerooms reports
+// Open Reports
 // -------------------------
 #block-reports-useraction-dragbox {
     background-color: $modal-backdrop-bg;
-    border: 1px solid rgba(0,0,0,.2);
+    border: 1px solid rgba(0, 0, 0, .2);
 }
 
 #block-reports-useraction-content {
@@ -28,7 +27,7 @@
     height: auto;
 }
 
-#block-reports-useraction-msgtable tr td{
+#block-reports-useraction-msgtable tr td {
     display: block;
     width: 100%;
 }

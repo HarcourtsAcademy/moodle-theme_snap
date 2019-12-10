@@ -24,7 +24,7 @@ use theme_snap\local;
  * Test course card service.
  * @package   theme_snap
  * @author    gthomas2
- * @copyright Copyright (c) 2016 Moodlerooms Inc. (http://www.moodlerooms.com)
+ * @copyright Copyright (c) 2016 Blackboard Inc. (http://www.blackboard.com)
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class theme_snap_services_course_test extends \advanced_testcase {
@@ -64,7 +64,7 @@ class theme_snap_services_course_test extends \advanced_testcase {
 
         // Create 5 courses in the past.
         for ($c = 0; $c < 5; $c++) {
-            $enddate = time() - DAYSECS * rand(0, 365);
+            $enddate = time() - DAYSECS * ($c + 1) * 10;
             $startdate = $enddate - YEARSECS;
             $record = (object) [
                 'startdate' => $startdate,
@@ -110,7 +110,7 @@ class theme_snap_services_course_test extends \advanced_testcase {
         $service->setfavorite($this->courses[0]->shortname, true, $this->user1->id);
         $service->setfavorite($this->courses[1]->shortname, true, $this->user1->id);
 
-        $favorites = $service->favorites($this->user1->id);
+        $favorites = $service->favorites($this->user1->id, false);
         $this->assertTrue(isset($favorites[$this->courses[0]->id]));
         $this->assertTrue(isset($favorites[$this->courses[1]->id]));
         $this->assertFalse(isset($favorites[$this->courses[2]->id]));

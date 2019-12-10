@@ -16,7 +16,7 @@
 # Tests for toggle course section visibility in non edit mode in snap.
 #
 # @package    theme_snap
-# @copyright  2015 Guy Thomas <gthomas@moodlerooms.com>
+# @copyright  2015 Guy Thomas <osdev@blackboard.com>
 # @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
 
 
@@ -59,6 +59,9 @@ Feature: When the moodle theme is set to Snap, teachers can move course sections
     And the next navigation for section "3" is for "Topic 4" linking to "#section-4"
     And the previous navigation for section "4" is for "My & < > Topic" linking to "#section-3"
     And the next navigation for section "2" is for "My & < > Topic" linking to "#section-3"
+    # The data-section attribute of the moved section module link should match the section number.
+    # This is done so activities are created in the correct section.
+    Then "#section-3 a.section-modchooser-link[data-section=\"3\"]" "css_element" should exist
 
   @javascript
   Scenario: Teacher loses teacher capability whilst course open and receives the correct error message when trying to

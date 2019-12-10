@@ -46,17 +46,56 @@
 
         <!-- Content -->
         <div id="snap-pm-content" class="row">
-            <!-- START Academy Patch M#060 -->
-            <!-- User Profile -->
-            <section id="snap-pm-profile" class="col-lg-9">
-                <h2 class="sr-only">{{#str}}profile{{/str}}</h2>
-                {{{userprofile}}}
-            </section>
-            <!-- Courses 
+            <!-- Courses -->
             <section id="snap-pm-courses" class="col-lg-9">
+                <h2 class="sr-only">{{#str}}courses{{/str}}</h2>
+
+{{!
+    When the user has courses which have finished, output course by year as tabs.
+}}
+
+                {{#coursenav}}
+                    <!-- Nav tabs -->
+                <div id="snap-pm-accessible-tab">
+                    <ul class="nav nav-tabs" role="tablist" id="snap-pm-courses-nav">
+                            <li class="tab active">
+                                <a id="snap-pm-tab-current" class="nav-link" href="#snap-pm-courses-current" role="tab" aria-controls="snap-pm-courses-current" data-toggle="tab" tabindex="0">{{#str}}courses{{/str}}</a>
+                            </li>
+                            {{#pastcourselist}}
+                                <li class="tab">
+                                    <a id="snap-pm-tab-{{year}}" class="nav-link" href="#snap-pm-courses-{{year}}" role="tab" aria-controls="snap-pm-courses-{{year}}" data-toggle="tab" tabindex="-1">{{year}}</a>
+                                </li>
+                            {{/pastcourselist}}
+                    </ul>
+
+                    <!-- Tab panes -->
+                    <div class="tab-content" id="snap-pm-courses-content" aria-live="polite">
+                        <!-- Current courses -->
+                        {{> theme_snap/personal_menu_current_courses }}
+
+                        <!-- Past courses by year -->
+                        {{#pastcourselist}}
+                            <div id="snap-pm-courses-{{year}}" class="tab-pane fade in clearfix" role="tabpanel" aria-labelledby="hsnap-pm-tab-{{year}}" aria-hidden="false" tabindex="0">
+                                {{#courses}}
+                                    {{> theme_snap/course_cards }}
+                                {{/courses}}
+                            </div>
+                        {{/pastcourselist}}
+                    </div>
+                </div>
+                {{/coursenav}}
+
+{{!
+    When the user has no course which have finished, output current courses only.
+}}
+
+                {{^coursenav}}
+                <!-- Current courses -->
+                {{> theme_snap/personal_menu_current_courses }}
+                {{/coursenav}}
+
+                {{{browseallcourses}}}
             </section>
-            -->
-            <!-- END Academy Patch M#060 -->
             <!-- Updates -->
             <div id="snap-pm-updates" class="col-lg-3">
                 {{#updates}}

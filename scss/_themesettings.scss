@@ -4,7 +4,10 @@
 // -------------------------
 // Main form.
 // -------------------------
-#page-admin-setting-themesettingsnap{
+
+/* stylelint-disable declaration-no-important*/
+
+#page-admin-setting-themesettingsnap {
     #region-main,
     .settingsform {
         max-width: 100%;
@@ -16,7 +19,7 @@
     }
 
     .form-description,
-    .dndupload-message  {
+    .dndupload-message {
         font-size: small;
     }
 
@@ -42,6 +45,8 @@
 // Tab styles.
 // -------------------------
 #snap-admin-tabs {
+    display: block;
+
     border-bottom: 0;
     .nav-item {
         float: none;
@@ -55,7 +60,7 @@
 // -------------------------
 // Tab - Basics.
 // -------------------------
-#page-admin-setting-themesettingsnap {
+#page-admin-setting-themesettingsnap .tab-pane:not(#themesnapcolorcategories) {
 
     #admin-fullname,
     #admin-themecolor,
@@ -116,10 +121,17 @@
         font-family: $font-family-monospace;
     }
 }
+#page-admin-setting-themesettingsnap .tab-pane#themesnapcolorcategories {
+
+    #id_s_theme_snap_category_color {
+        font-family: monospace;
+    }
+}
+
 // -------------------------
 // Tab - Cover display.
 // -------------------------
-#themesnapcoverdisplay {
+#themesnapcoverdisplay.active {
     @include make-row();
 
     div[id^="admin-slide_"] {
@@ -128,6 +140,8 @@
         .form-defaultinfo {
             display: none;
         }
+        float: left;
+        width: 33%;
     }
     #admin-slide_one_image,
     #admin-slide_one_title,
@@ -138,17 +152,17 @@
 // -------------------------
 // Tab - Personal menu.
 // -------------------------
-#themesnappersonalmenu {
-    @include make-row();
+#themesnappersonalmenu.active {
+
     .form-item {
         @include make-col(4);
+        float: left;
     }
 }
-
 // -------------------------
 // Tab - Feature spots.
 // -------------------------
-#themesnapfeaturespots {
+#themesnapfeaturespots.active {
     .formsettingheading {
         font-family: $font-family-sans-serif;
     }
@@ -160,7 +174,7 @@
 
     #admin-fs_heading {
         input {
-            font-size: $font-size-h4;
+            font-size: $h4-font-size;
         }
     }
 
@@ -168,7 +182,7 @@
     #admin-fs_two_title,
     #admin-fs_three_title {
         input {
-            font-size: $font-size-h5;
+            font-size: $h5-font-size;
         }
     }
 
@@ -201,7 +215,7 @@
 // -------------------------
 // Tab - Featured courses.
 // -------------------------
-#themesnapfeaturedcourses {
+#themesnapfeaturedcourses.active {
 
     .formsettingheading {
         font-family: $font-family-sans-serif;
@@ -214,7 +228,7 @@
 
     #admin-fc_heading {
         input {
-            font-size: $font-size-h4;
+            font-size: $h4-font-size;
         }
     }
 
@@ -239,7 +253,7 @@
 // -------------------------
 // Tab - Course display.
 // -------------------------
-#themesnapcoursedisplay {
+#themesnapcoursedisplay.active {
     @include make-row();
 
     .form-item {
@@ -290,9 +304,10 @@
 // -------------------------
 // Tab - Social media.
 // -------------------------
-#themesnapsocialmedia {
+#themesnapsocialmedia.active {
     @include make-row();
     .form-item {
         @include make-col(6);
+        float: left;
     }
 }

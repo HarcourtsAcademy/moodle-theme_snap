@@ -18,7 +18,7 @@
  * Snap core renderer.
  *
  * @package   theme_snap
- * @copyright Copyright (c) 2015 Moodlerooms Inc. (http://www.moodlerooms.com)
+ * @copyright Copyright (c) 2015 Blackboard Inc. (http://www.blackboard.com)
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
@@ -31,6 +31,8 @@ require_once($CFG->dirroot.'/message/output/popup/lib.php');
 use stdClass;
 use context_course;
 use context_system;
+use coding_exception;
+use single_button;
 use DateTime;
 use html_writer;
 use moodle_url;
@@ -82,7 +84,7 @@ class core_renderer extends \theme_boost\output\core_renderer {
                 $modnames = get_module_types_names();
                 $modname = $modnames[$component];
                 $mod = get_module_metadata($COURSE, array($component => $modname), null);
-                if ($mod[$component]->help) {
+                if (!empty($mod) && isset($mod[$component]) && is_object($mod[$component]) && $mod[$component]->help) {
                     $helptext = format_text($mod[$component]->help, FORMAT_MARKDOWN);
                     $data = (object) [
                         'helptext' => $helptext,
@@ -375,11 +377,7 @@ class core_renderer extends \theme_boost\output\core_renderer {
     protected function render_callstoaction() {
 
         $mobilemenu = '<div id="snap-pm-mobilemenu">';
-        /* START Academy Patch M#060
-         * $mobilemenu .= $this->mobile_menu_link('courses', 'courses', '#snap-pm-courses');
-         */
-        $mobilemenu .= $this->mobile_menu_link('viewyourprofile', 'user', '#snap-pm-profile');
-        /* END Academy Patch M#060 */
+        $mobilemenu .= $this->mobile_menu_link('courses', 'courses', '#snap-pm-courses');
         $deadlines = $this->render_deadlines();
         if (!empty($deadlines)) {
             $columns[] = $deadlines;
@@ -420,8 +418,12 @@ class core_renderer extends \theme_boost\output\core_renderer {
         } else {
             $sections = [];
             $intelliboard = $this->render_intelliboard();
+            $intellicart = $this->render_intellicart();
             if (!empty($intelliboard)) {
                 $sections[] = $intelliboard;
+            }
+            if (!empty($intellicart)) {
+                $sections[] = $intellicart;
             }
             foreach ($columns as $column) {
                 if (!empty($column)) {
@@ -527,12 +529,12 @@ class core_renderer extends \theme_boost\output\core_renderer {
         $loginurl = $CFG->wwwroot.'/login/index.php';
         $loginatts = [
             'aria-haspopup' => 'true',
-            'class' => 'btn btn-default snap-login-button js-snap-pm-trigger',
+            'class' => 'btn btn-primary snap-login-button js-snap-pm-trigger',
         ];
         if (!empty($CFG->alternateloginurl) or !empty($CFG->theme_snap_disablequicklogin)) {
             $loginurl = $CFG->wwwroot.'/login/index.php';
             $loginatts = [
-                'class' => 'btn btn-default snap-login-button',
+                'class' => 'btn btn-primary snap-login-button',
             ];
         }
         // This check is here for the front page login.
@@ -570,12 +572,21 @@ class core_renderer extends \theme_boost\output\core_renderer {
 
         if (!isloggedin() || isguestuser()) {
             // Return login form.
-            $action = s($CFG->wwwroot).'/login/index.php';
+            if (empty($CFG->loginhttps)) {
+                $wwwroot = $CFG->wwwroot;
+            } else {
+                $wwwroot = str_replace("http://", "https://", $CFG->wwwroot);
+            }
+
+            $action = s($wwwroot).'/login/index.php';
             $altlogins = $this->render_login_alternative_methods(new login_alternative_methods());
 
+            $logintoken = is_callable(['\\core\\session\\manager', 'get_login_token']) ?
+                    \core\session\manager::get_login_token() : '';
             $data = (object) [
                 'action' => $action,
-                'altlogins' => $altlogins
+                'altlogins' => $altlogins,
+                'logintoken' => $logintoken,
             ];
 
             if ($PAGE->pagetype !== 'login-index') {
@@ -606,45 +617,28 @@ class core_renderer extends \theme_boost\output\core_renderer {
         }
 
         // User quicklinks.
-        /* START Academy Patch M#060 Customise Moodlerooms Snap theme. */
-        $courseslink = [
-            'link' => s($CFG->wwwroot). '/my/index.php',
-            'title' => get_string('mycourses')
-        ];
-        /* END Academy Patch M#060 */
         $profilelink = [
             'link' => s($CFG->wwwroot). '/user/profile.php',
             'title' => get_string('profile')
+        ];
+        $dashboardlink = [
+            'link' => s($CFG->wwwroot). '/my',
+            'title' => get_string('myhome')
         ];
         $gradelink = [
             'link' => s($CFG->wwwroot). '/grade/report/overview/index.php',
             'title' => get_string('grades')
         ];
-        /* START Academy Patch M#060 Customise Moodlerooms Snap theme.
         $preferenceslink = [
             'link' => s($CFG->wwwroot). '/user/preferences.php',
             'title' => get_string('preferences')
         ];
-        END Academy Patch M#060 */
         $logoutlink = [
             'id' => 'snap-pm-logout',
             'link' => s($CFG->wwwroot).'/login/logout.php?sesskey='.sesskey(),
             'title' => get_string('logout')
         ];
-        /* START Academy Patch M#060 Customise Moodlerooms Snap theme.
-         * Include user profile information on the Personal Menu.
-
-         * $quicklinks = [$profilelink, $preferenceslink, $gradelink, $logoutlink];
-         *
-         */
-        $quicklinks = [$courseslink, $gradelink, $logoutlink]; // Academy Patch M#060.
-
-        // Render custom blocks.
-        $renderer = $PAGE->get_renderer('core_user', 'myprofile');
-        $tree = \core_user\output\myprofile\manager::build_tree($USER, $USER);
-        $userprofile =  $renderer->render($tree);
-
-        /* END Academy Patch M#060 */
+        $quicklinks = [$profilelink, $dashboardlink, $preferenceslink, $gradelink, $logoutlink];
 
         // Build up courses.
         $courseservice = course::service();
@@ -659,13 +653,13 @@ class core_renderer extends \theme_boost\output\core_renderer {
         $published = []; // Published course & favorites when user visible.
         $hidden = []; // Hidden courses.
         foreach ($currentcourses as $course) {
-            $ccard = new course_card($course->id);
+            $ccard = new course_card($course);
             if (isset($favorited[$course->id]) || $course->visible) {
                 $published[] = $ccard;
             }
         }
         foreach ($currentcourses as $course) {
-            $ccard = new course_card($course->id);
+            $ccard = new course_card($course);
             if (!isset($favorited[$course->id]) && !$course->visible) {
                 $hidden[] = $ccard;
             }
@@ -694,7 +688,7 @@ class core_renderer extends \theme_boost\output\core_renderer {
             $courses = [];
             // Add course cards to each year.
             foreach ($yearcourses as $course) {
-                $ccard = new course_card($course->id);
+                $ccard = new course_card($course);
                 $ccard->archived = true;
                 $courses[] = $ccard;
             }
@@ -731,7 +725,6 @@ class core_renderer extends \theme_boost\output\core_renderer {
         }
 
         $data = (object) [
-            'userprofile' => $userprofile, // Academy Patch M#060
             'userpicture' => $picture,
             'fullnamelink' => $fullnamelink,
             'realfullnamelink' => $realfullnamelink,
@@ -751,14 +744,9 @@ class core_renderer extends \theme_boost\output\core_renderer {
      *
      */
     public function personal_menu_trigger() {
-        global $CFG, $USER;
+        global $USER;
         $output = '';
         if (!isloggedin() || isguestuser()) {
-            if (empty($CFG->loginhttps)) {
-                $wwwroot = $CFG->wwwroot;
-            } else {
-                $wwwroot = str_replace("http://", "https://", $CFG->wwwroot);
-            }
             if (local::current_url_path() != '/login/index.php') {
                 $output .= $this->login_button();
             }
@@ -769,11 +757,7 @@ class core_renderer extends \theme_boost\output\core_renderer {
             $userpicture->size = 100;
             $picture = $this->render($userpicture);
 
-            /* START Academy Patch M#060 Customise Moodlerooms Snap theme.
-             * Replace 'My Course' label next to header profile picture with user's full name.  */
-            // $menu = '<span class="hidden-xs-down">' .get_string('menu', 'theme_snap'). '</span>';
-            $menu = '<span class="hidden-xs-down">' .fullname($USER). '</span>';
-            /* END Academy Patch M#060 */
+            $menu = '<span class="hidden-xs-down">' .get_string('menu', 'theme_snap'). '</span>';
             $badge = $this->render_badge_count();
             $linkcontent = $picture.$menu.$badge;
             $attributes = array(
@@ -822,7 +806,6 @@ class core_renderer extends \theme_boost\output\core_renderer {
     /**
      * Cover carousel.
      * @return string
-     *
      */
     public function cover_carousel() {
         global $PAGE;
@@ -865,37 +848,13 @@ class core_renderer extends \theme_boost\output\core_renderer {
      * @return string
      */
     public function page_heading($tag = 'h1') {
-        global $CFG, $COURSE, $PAGE;
+        global $COURSE, $PAGE;
 
         $heading = $this->page->heading;
 
         if ($this->page->pagelayout == 'mypublic') {
             // For the user profile page message button we need to call 2.9 content_header.
             $heading = parent::context_header();
-            /* START Academy Patch M#060. Use the course topic name and link as the heading when viewing course materials. */
-        } else if ((($COURSE->format == 'topics' || $COURSE->format == 'weeks')) &&
-                $this->page->pagelayout == 'incourse' &&
-                substr($this->page->pagetype,0,4)  == 'mod-') {
-
-            require_once($CFG->dirroot.'/course/lib.php');
-            require_once($CFG->dirroot.'/course/format/lib.php');
-
-            $cm = $this->page->cm;
-            $section = $cm->section;
-            $sectioninfo = $cm->get_section_info($section);
-            $sectionname = get_section_name($COURSE, $sectioninfo);
-
-            $sectionnumber = $this->get_section_for_id($section);
-            $sectionurl = course_get_url($COURSE, $sectionnumber);
-
-            $heading = format_string($sectionname);
-            if (empty($heading) || $heading == get_string('general')) {
-                $heading = get_string('introduction', 'theme_snap');
-            }
-            $heading = '<i class="fa fa-chevron-left" aria-hidden="true"></i> ' . $heading;
-            $heading = html_writer::link($sectionurl, $heading);
-            $heading = html_writer::tag($tag, $heading);
-            /* END Academy Patch M#060. */
         } else if ($COURSE->id != SITEID && stripos($heading, format_string($COURSE->fullname)) === 0) {
             // If we are on a course page which is not the site level course page.
             $courseurl = new moodle_url('/course/view.php', ['id' => $COURSE->id]);
@@ -906,11 +865,6 @@ class core_renderer extends \theme_boost\output\core_renderer {
             // My course
             // This is intentional.
             $heading = format_string($COURSE->fullname);
-            /* START Academy Patch M#060 Customise Moodlerooms Snap. */
-            if ($this->page->pagelayout != 'course') {
-                $heading = '<i class="fa fa-chevron-left" aria-hidden="true"></i> ' . $heading;
-            }
-            /* END Academy Patch M#060 */
             $heading = html_writer::link($courseurl, $heading);
             $heading = html_writer::tag($tag, $heading);
         } else {
@@ -934,7 +888,7 @@ class core_renderer extends \theme_boost\output\core_renderer {
             $url = new moodle_url('/admin/settings.php', ['section' => 'themesettingsnap']);
             $link = html_writer::link($url,
                             get_string('changefullname', 'theme_snap'),
-                            ['class' => 'btn btn-default btn-sm']);
+                            ['class' => 'btn btn-secondary btn-sm']);
             $heading .= $link;
         }
         return $heading;
@@ -1058,15 +1012,16 @@ class core_renderer extends \theme_boost\output\core_renderer {
             $name    = format_string($discussion->name, true, array('context' => $context));
             $date    = userdate($discussion->timemodified, get_string('strftimedatetime', 'langconfig'));
 
-            $readmorebtn = "<a class='btn btn-default toggle' href='".
+            $message = format_text($message, $discussion->messageformat, ['context' => $context]);
+
+            $readmorebtn = "<a class='btn btn-secondary toggle' href='".
                 $CFG->wwwroot."/mod/forum/discuss.php?d=".$discussion->discussion."'>".
                 get_string('readmore', 'theme_snap')."</a>";
 
             $preview = '';
             $newsimage = '';
             if (!$imagestyle) {
-                $preview = format_text($message, $discussion->messageformat, ['context' => $context]);
-                $preview = html_to_text($preview, 0, false);
+                $preview = html_to_text($message, 0, false);
                 $preview = "<div class='news-article-preview'><p>".shorten_text($preview, 200)."</p>
                 <p class='text-right'>".$readmorebtn."</p></div>";
             } else {
@@ -1095,7 +1050,7 @@ HTML;
         $actionlinks = html_writer::link(
             new moodle_url('/mod/forum/view.php', array('id' => $cm->id)),
             get_string('morenews', 'theme_snap'),
-            array('class' => 'btn btn-default')
+            array('class' => 'btn btn-secondary')
         );
         if (forum_user_can_post_discussion($forum, $currentgroup, $groupmode, $cm, $context)) {
             $actionlinks .= html_writer::link(
@@ -1119,7 +1074,7 @@ HTML;
      * @return array|string
      */
     public function body_css_classes(array $additionalclasses = array()) {
-        global $PAGE, $COURSE, $SESSION;
+        global $PAGE, $COURSE, $SESSION, $CFG, $USER;
 
         $classes = parent::body_css_classes($additionalclasses);
         $classes = explode (' ', $classes);
@@ -1144,8 +1099,6 @@ HTML;
             'local-joulegrader-view',
             'blocks-conduit-view',
             'blocks-reports-view',
-            'grade-report-joulegrader-index',
-            'grade-report-nortongrader-index',
             'admin-setting-modsettinglti',
             'blocks-campusvue-view',
             'enrol-instances',
@@ -1158,9 +1111,6 @@ HTML;
 
         if (!empty($PAGE->url)) {
             $section = $PAGE->url->param('section');
-            if ($COURSE->format === 'folderview' && !empty($section)) {
-                $classes[] = 'folderview-single-section';
-            }
         }
 
         // Add completion tracking class.
@@ -1178,8 +1128,64 @@ HTML;
         // Add theme-snap class so modules can customise css for snap.
         $classes[] = 'theme-snap';
 
+        if (!empty($CFG->allowcategorythemes)) {
+            // This duplicates code triggered by allowcategorythemes, so no
+            // need to repeat it if that setting is on.
+            $catids = array_keys($PAGE->categories);
+            // Immediate parent category is always output by core code.
+            array_shift($catids);
+            foreach ($catids as $catid) {
+                $classes[] = 'category-' . $catid;
+            }
+            // Put class category-x on body when loading editcategory page on course.
+            // Categories and parent categories are added in ascendant order.
+            if (strpos($PAGE->url->get_path(), "course/editcategory.php") !== false && $PAGE->url->get_param('id') !== null) {
+                $parentcategories = self::get_parentcategories($PAGE->url->get_param('id'));
+                foreach ($parentcategories as $category) {
+                    $classes[] = 'category-' . $category;
+                }
+            }
+
+            // Put class category-x on body when loading add new course page.
+            // Categories and parent categories are added in ascendant order.
+            if (strpos($PAGE->url->get_path(), "course/edit.php") !== false && $PAGE->url->get_param('category') !== null) {
+                $parentcategories = self::get_parentcategories($PAGE->url->get_param('category'));
+                foreach ($parentcategories as $category) {
+                    $classes[] = 'category-' . $category;
+                }
+            }
+        }
+
+        // Add page layout.
+        $classes[] = 'layout-'.$PAGE->pagelayout;
+
+        // Profile based branding.
+        $pbbclass = local::get_profile_based_branding_class($USER);
+        if (!empty($pbbclass)) {
+            $classes[] = $pbbclass;
+        }
+
+        // Remove duplicates if necessary.
+        $classes = array_unique($classes);
+
         $classes = implode(' ', $classes);
         return $classes;
+    }
+
+    /**
+     * Returns all parent categories hierarchy from a category id
+     * @param int $id
+     * @return array
+     * @throws \moodle_exception
+     */
+    private function get_parentcategories($id) {
+        global $DB;
+        $category = $DB->get_record('course_categories', array('id' => $id));
+        if (!$category) {
+            throw new \moodle_exception('unknowncategory');
+        }
+        $parentcategoryids = explode('/', trim($category->path, '/'));
+        return $parentcategoryids;
     }
 
     /**
@@ -1188,27 +1194,34 @@ HTML;
      * rather than inside them.
      */
     public function confirm($message, $continue, $cancel) {
-        if (is_string($continue)) {
-            $continue = new \single_button(new moodle_url($continue), get_string('continue'), 'post');
+        // We need plain styling of confirm boxes on upgrade because we don't know which stylesheet we have (it could be
+        // from any previous version of Moodle).
+        if ($continue instanceof single_button) {
+            $continue->primary = true;
+        } else if (is_string($continue)) {
+            $continue = new single_button(new moodle_url($continue), get_string('continue'), 'post', true);
         } else if ($continue instanceof moodle_url) {
-            $continue = new \single_button($continue, get_string('continue'), 'post');
-        } else if (!$continue instanceof \single_button) {
-            throw new \coding_exception(
+            $continue = new \single_button($continue, get_string('continue'), 'post', true);
+        } else {
+            throw new coding_exception(
                 'The continue param to $OUTPUT->confirm() must be either a URL (string/moodle_url) or a single_button instance.'
             );
         }
 
-        if (is_string($cancel)) {
-            $cancel = new \single_button(new moodle_url($cancel), get_string('cancel'), 'get');
+        if ($cancel instanceof single_button) {
+            $output = '';
+        } else if (is_string($cancel)) {
+            $cancel = new single_button(new moodle_url($cancel), get_string('cancel'), 'get');
         } else if ($cancel instanceof moodle_url) {
             $cancel = new \single_button($cancel, get_string('cancel'), 'get');
-        } else if (!$cancel instanceof \single_button) {
-            throw new \coding_exception(
+        } else {
+            throw new coding_exception(
                 'The cancel param to $OUTPUT->confirm() must be either a URL (string/moodle_url) or a single_button instance.'
             );
         }
 
         $output = $this->box_start('generalbox snap-continue-cancel', 'notice');
+        $output .= html_writer::tag('h4', get_string('confirm'));
         $output .= html_writer::tag('p', $message);
         $output .= html_writer::tag('div', $this->render($continue) . $this->render($cancel), array('class' => 'buttons'));
         $output .= $this->box_end();
@@ -1406,7 +1419,7 @@ HTML;
                 <!--Title-->
                 <h3 class="snap-feature-title h5">' .s($title). '</h3>
                 <!--Content-->
-                <p class="snap-feature-text">' .s($text). '</p>
+                <p class="snap-feature-text">' .format_text($text). '</p>
             </div>
             <!--/.Card content-->
         </div>';
@@ -1441,6 +1454,12 @@ HTML;
         }
         // Retrieve all modules with associated metadata.
         $sectionreturn = null;
+
+        foreach ($modnames as $module => $name) {
+            if (is_callable('mr_off') && mr_off($module, '_MR_MODULES')) {
+                unset($modnames[$module]);
+            }
+        }
         $modules = get_module_metadata($COURSE, $modnames, $sectionreturn);
         foreach ($modules as $mod) {
             $help = !empty($mod->help) ? $mod->help : '';
@@ -1455,10 +1474,15 @@ HTML;
                     'help' => $helptext
                 ];
             } else {
+                // The name should be 'lti' instead of the module's URL which is the one we're getting.
+                $imageurl = $OUTPUT->image_url('icon', $mod->name);
+                if (strpos($mod->name, 'lti:') !== false) {
+                    $imageurl = $OUTPUT->image_url('icon', 'lti');
+                }
                 $activities[] = (object) [
                     'name' => $mod->name,
                     'title' => $mod->title,
-                    'icon' => ''.$OUTPUT->image_url('icon', $mod->name),
+                    'icon' => ''.$imageurl,
                     'link' => $mod->link .'&section=0', // Section is replaced by js.
                     'help' => $helptext
                 ];
@@ -1491,7 +1515,11 @@ HTML;
             $this->add_switchroleto_navigation_node($item);
         }
 
-        return parent::render_navigation_node($item);;
+        $content = parent::render_navigation_node($item);
+        if (strpos($content, 'fa-fw fa-fw')) {
+            $content = str_replace('fa-fw fa-fw', 'fa-fw nav-missing-icon', $content);
+        }
+        return $content;
     }
 
     /**
@@ -1550,7 +1578,7 @@ HTML;
      *
      * @return bool|int The role(int) if the user is in another role, false otherwise
      */
-    private function in_alternative_role() {
+    public function in_alternative_role() {
         global $USER, $PAGE;
 
         $course = $PAGE->course;
@@ -1664,10 +1692,15 @@ HTML;
     protected function render_notification_popups() {
         global $OUTPUT, $CFG;
 
+        $navoutput = '';
+        if (\core_component::get_component_directory('local_intellicart') !== null) {
+            require_once(__DIR__ . '/../../../../local/intellicart/lib.php');
+            $navoutput .= local_intellicart_render_navbar_output($OUTPUT);
+        }
         // We only want the notifications bell, not the messages badge so temporarilly disable messaging to exclude it.
         $messagingenabled = $CFG->messaging;
         $CFG->messaging = false;
-        $navoutput = message_popup_render_navbar_output($OUTPUT);
+        $navoutput .= message_popup_render_navbar_output($OUTPUT);
         $CFG->messaging = $messagingenabled;
         if (empty($navoutput)) {
             return '';
@@ -1676,17 +1709,62 @@ HTML;
     }
 
     /**
+     * Render intellicart link in personal menu.
+     * @return string
+     */
+    protected function render_intellicart() {
+        global $PAGE, $OUTPUT;
+        $o = '';
+        $link = '';
+
+        // Prevent if no intellicart.
+        if (\core_component::get_component_directory('local_intellicart') === null) {
+            return $o;
+        }
+
+        // Intellicart adds a link to the flatnav.
+        $flatnav = $PAGE->flatnav->get_key_list();
+
+        // Student dashboard link.
+        if (in_array("intellicart_dashboard", $flatnav, true)) {
+            $node = $PAGE->flatnav->get("intellicart_dashboard");
+            $iconurl = $OUTPUT->image_url('intelliboard', 'theme');
+            $img = '<img class="svg-icon" role="presentation" src="'.s($iconurl).'">';
+            $link .= '<a href=" '. $node->action() .' ">'.$img.s($node->get_content()).'</a><br>';
+        }
+
+        // No links to display.
+        if (!$link) {
+            return $o;
+        }
+
+        $intellicartheading = get_string('intellicart', 'local_intellicart');
+        $o = '<h2>' .$intellicartheading. '</h2>';
+        $o .= '<div id="snap-personal-menu-intellicart">'
+            .$link.
+            '</div>';
+
+        return $o;
+    }
+
+    /**
      * This renders the navbar.
      * Uses bootstrap compatible html.
+     * @param string $coverimage
      */
-    public function navbar() {
-        global $COURSE, $CFG, $USER;
+    public function navbar($coverimage = '') {
+        global $COURSE, $CFG;
 
         require_once($CFG->dirroot.'/course/lib.php');
 
         $breadcrumbs = '';
         $courseitem = null;
-        // $snapmycourses = html_writer::link('#', get_string('menu', 'theme_snap'), array('class' => 'js-snap-pm-trigger')); // Academy Patch M#060
+        $attr['class'] = 'js-snap-pm-trigger';
+
+        if (!empty($coverimage)) {
+            $attr['class'] .= ' mast-breadcrumb';
+        }
+        $snapmycourses = html_writer::link('#', get_string('menu', 'theme_snap'), $attr);
 
         foreach ($this->page->navbar->get_items() as $item) {
             $item->hideicon = true;
@@ -1710,15 +1788,10 @@ HTML;
             }
 
             // Replace my courses none-link with link to snap personal menu.
-            /* START Academy Patch M#060 Customise Moodlerooms Snap theme. */
             if ($item->key === 'mycourses') {
-                //$breadcrumbs .= '<li class="breadcrumb-item">' .$snapmycourses. '</li>';
-                $breadcrumbs .= '<li class="breadcrumb-item">';
-                $breadcrumbs .= html_writer::link(new moodle_url('/my', ['redirect' => 0]), get_string('mycourses'));
-                $breadcrumbs .= '</li>';
+                $breadcrumbs .= '<li class="breadcrumb-item">' .$snapmycourses. '</li>';
                 continue;
             }
-            /* END Academy Patch M#060 */
 
             if ($item->type == \navigation_node::TYPE_COURSE) {
                 $courseitem = $item;
@@ -1746,7 +1819,11 @@ HTML;
 
             // Only output breadcrumb items which have links.
             if ($item->action !== null) {
-                $link = html_writer::link($item->action, $item->text);
+                $attr = [];
+                if (!empty($coverimage)) {
+                    $attr = ['class' => 'mast-breadcrumb'];
+                }
+                $link = html_writer::link($item->action, $item->text, $attr);
                 $breadcrumbs .= '<li class="breadcrumb-item">' .$link. '</li>';
             }
         }

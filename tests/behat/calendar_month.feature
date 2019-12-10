@@ -15,7 +15,7 @@
 #
 #
 # @package    theme_snap
-# @copyright Copyright (c) 2015 Moodlerooms Inc. (http://www.moodlerooms.com)
+# @copyright Copyright (c) 2015 Blackboard Inc. (http://www.blackboard.com)
 # @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
 
 @theme @theme_snap
@@ -42,7 +42,7 @@ Feature: When a user clicks on next or previous month link in the calendar block
    Then I add the "Calendar" block
    Then I follow "Course Dashboard"
     And I should see "Calendar"
-    And I follow "Next month"
+    And I click on ".arrow_link.next" "css_element"
    Then I should see "Calendar"
 
   @javascript

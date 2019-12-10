@@ -24,7 +24,7 @@ use theme_snap\local,
 /**
  * Featured courses renderable
  *
- * @author    Guy Thomas <gthomas@moodlerooms.com>
+ * @author    Guy Thomas <osdev@blackboard.com>
  * @copyright Copyright (c) 2017 Blackboard Inc.
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
@@ -105,8 +105,8 @@ class featured_courses implements \renderable, \templatable {
         if ($count >= 4) {
             $colclass = 'col-sm-3'; // Four cards = 25%.
         }
-        if ($count === 2) {
-            $colclass = 'col-sm-6'; // Two cards = 50%.
+        if ($count === 1 || $count === 2) {
+            $colclass = 'col-sm-6'; // One or two cards = 50%.
         }
         if ($count === 3 || $count === 6) {
             $colclass = 'col-sm-4'; // Three cards = 33.3%.

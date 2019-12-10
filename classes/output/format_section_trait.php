@@ -20,7 +20,7 @@
  * Used for section outputs.
  *
  * @package   theme_snap
- * @copyright Copyright (c) 2015 Moodlerooms Inc. (http://www.moodlerooms.com)
+ * @copyright Copyright (c) 2015 Blackboard Inc. (http://www.blackboard.com)
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
@@ -210,7 +210,6 @@ trait format_section_trait {
         // SHAME - Remove tabindex when editing menu is shown.
         $sectionarrayvars = array('id' => 'section-'.$section->section,
         'class' => 'section main clearfix'.$sectionstyle,
-        'role' => 'article',
         'aria-label' => get_section_name($course, $section));
         if (!$PAGE->user_is_editing()) {
             $sectionarrayvars['tabindex'] = '-1';
@@ -246,7 +245,7 @@ trait format_section_trait {
             $o .= "<h2 class='sectionname'><a href='$url' title='".s(get_string('editcoursetopic', 'theme_snap'))."'>";
             $o .= get_string('defaulttopictitle', 'theme_snap')."</a></h2>";
         } else {
-            $o .= $output->heading($sectiontitle, 2, 'sectionname' . $classes);
+            $o .= "<div tabindex='0'>" . $output->heading($sectiontitle, 2, 'sectionname' . $classes) . "</div>";
         }
 
         // Section drop zone.
@@ -289,9 +288,10 @@ trait format_section_trait {
             $ci = new \core_availability\info_section($section);
             $fullinfo = $ci->get_full_information();
             $formattedinfo = '';
+            $displayedinfo = $canviewhiddensections ? $fullinfo : $section->availableinfo;
             if ($fullinfo) {
                 $formattedinfo = \core_availability\info::format_info(
-                    $fullinfo, $section->course);
+                    $displayedinfo, $section->course);
             }
         }
 
@@ -307,11 +307,13 @@ trait format_section_trait {
 
         // Welcome message when no summary text.
         if (empty($summarytext) && $canupdatecourse) {
-            $summarytext = "<p>".get_string('defaultsummary', 'theme_snap')."</p>";
+            $summarytext = "<p tabindex='0'>".get_string('defaultsummary', 'theme_snap')."</p>";
             if ($section->section == 0) {
                 $editorname = format_string(fullname($USER));
-                $summarytext = "<p>".get_string('defaultintrosummary', 'theme_snap', $editorname)."</p>";
+                $summarytext = "<p tabindex='0'>".get_string('defaultintrosummary', 'theme_snap', $editorname)."</p>";
             }
+        } else {
+            $summarytext = "<div tabindex='0'>" . $summarytext . "</div>";
         }
 
         $o .= $summarytext;
@@ -501,6 +503,7 @@ trait format_section_trait {
         $output .= '</div>';
         $output .= html_writer::empty_tag('input', array(
             'type' => 'submit',
+            'class' => 'btn btn-primary',
             'name' => 'addtopic',
             'value' => get_string('createsection', 'theme_snap'),
         ));

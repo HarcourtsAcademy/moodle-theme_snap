@@ -15,7 +15,7 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Layout - course-index-catagory.
+ * Layout - course-index-category.
  *
  * @package   theme_snap
  * @copyright Copyright (c) 2017 Blackboard Inc.
@@ -44,25 +44,26 @@ if (!empty($coverimagecss)) {
     -->
         <main id="moodle-page" class="clearfix">
         <div id="page-header" class="clearfix snap-category-header <?php echo $mastimage; ?>">
-        <div class="breadcrumb-nav" aria-label="breadcrumb"><?php echo $OUTPUT->navbar(); ?></div>
+        <div class="breadcrumb-nav" aria-label="breadcrumb"><?php echo $OUTPUT->navbar($mastimage); ?></div>
             <div id="page-mast">
             <?php
                 $categories = $PAGE->categories;
                 if (empty($categories)) {
                     $catname = get_string('courses', 'theme_snap');
-                    echo '<h1>' .s($catname). '</h1>';
+                    $catname = format_text($catname);
+                    echo '<h1>' . html_to_text(s($catname)) . '</h1>';
                 } else {
                     // Get the current category name and description.
                     $cat = reset($categories);
                     $catid = $cat->id;
-                    $catname = $cat->name;
+                    $catname = format_text($cat->name);
                     $catdescription = $cat->description;
 
                     // Category edit link.
                     $editcatagory = '';
                     if (can_edit_in_category($catid)) {
                         $editurl = new moodle_url('/course/editcategory.php', ['id' => $catid]);
-                        $editcatagory = '<div><a href=" '.$editurl.' " class="btn btn-default btn-sm">'
+                        $editcatagory = '<div><a href=" '.$editurl.' " class="btn btn-secondary btn-sm">'
                                 .get_string('categoryedit', 'theme_snap').'</a></div>';
                     }
 
@@ -80,7 +81,7 @@ if (!empty($coverimagecss)) {
                         // No summary, output edit link.
                         $catsummary = $editcatagory;
                     }
-                    echo '<h1>' .s($catname). '</h1>';
+                    echo '<h1>' . html_to_text(s($catname)) . '</h1>';
                     echo $catsummary;
                 }
 
@@ -98,7 +99,7 @@ if (!empty($coverimagecss)) {
         <section id="region-main">
             <?php
             if ($manageurl) {
-                echo '<p><a class="btn btn-default btn-sm" href="' . $manageurl . '">';
+                echo '<p><a class="btn btn-secondary btn-sm" href="' . $manageurl . '">';
                 echo get_string('managecourses', 'moodle') . '</a></p>';
             }
             echo $OUTPUT->main_content();

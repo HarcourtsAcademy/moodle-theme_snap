@@ -18,7 +18,7 @@
  * Language strings
  *
  * @package   theme_snap
- * @copyright Copyright (c) 2015 Moodlerooms Inc. (http://www.moodlerooms.com)
+ * @copyright Copyright (c) 2015 Blackboard Inc. (http://www.blackboard.com)
  * @license   http://opensource.org/licenses/gpl-3.0.html GNU Public License
  */
 
@@ -34,7 +34,6 @@ $string['admin'] = 'Admin';
 $string['advancedbrandingheading'] = 'Advanced branding';
 $string['advancedbrandingheadingdesc'] = '';
 $string['ago'] = 'ago';
-$string['alphabetical'] = '<i class="fa fa-sort-alpha-asc" aria-hidden="true"></i> Alphabetical'; //Academy Patch M#060
 $string['answered'] = 'Answered';
 $string['appendices'] = 'Tools';
 $string['assigndraft'] = 'Draft requires your confirmation';
@@ -53,6 +52,11 @@ $string['cachedef_course_completion_progress_ts'] = 'This is used so that we can
 $string['cachedef_webservicedefinitions'] = 'Caching for auto generated web service definitions.';
 $string['card'] = 'Card';
 $string['categoryedit'] = 'Edit category';
+$string['category_color'] = 'Category color';
+$string['category_color_description'] = 'Course Category color. Child courses take the nearest parent category configuration';
+$string['category_color_palette'] = 'Color palette';
+$string['category_color_palette_description'] = 'See the corresponding hexadecimal value for the given color. This wont
+affect any configuration, it is just a sample to help users build the configuration value.';
 $string['changecoverimage'] = 'Change cover image';
 $string['changefullname'] = 'Change site name';
 $string['chapters'] = 'Chapters';
@@ -65,7 +69,7 @@ $string['coursecontacts'] = 'Course Contacts';
 $string['coursedisplay'] = 'Course display';
 $string['coursefootertoggle'] = 'Course footer';
 $string['coursefootertoggledesc'] = 'The Course footer shows useful information to users on a course page including course contacts, course description and recent activity in the course.';
-$string['courseformatnotification'] = 'The current course format you are using is not fully supported by the Snap theme. For the best experience Moodlerooms recommends using the Topics or Weekly course formats with the Snap theme. The course format can be changed in the <a href="{$a}">course settings</a>.';
+$string['courseformatnotification'] = 'The current course format you are using is not fully supported by the Snap theme. For the best experience Blackboard Open LMS recommends using the Topics or Weekly course formats with the Snap theme. The course format can be changed in the <a href="{$a}">course settings</a>.';
 $string['coursefixydefaulttext'] = 'You are currently not enrolled in any courses.<br>Courses you are enrolled in will be shown here.';
 $string['coursegrade'] = 'Course grade:';
 $string['coursenavigation'] = 'Course navigation';
@@ -82,7 +86,7 @@ $string['comingsoon'] = 'Coming soon!';
 $string['createsection'] = 'Create section';
 $string['current'] = 'Current';
 $string['customcss'] = 'Custom CSS';
-$string['customcssdesc'] = 'Please be aware that with great power comes great responsibility.  Any issue caused by the CSS added here is your responsibility to resolve.  Moodlerooms Support does not troubleshoot nor provide any help with CSS-related content.';
+$string['customcssdesc'] = 'Please be aware that with great power comes great responsibility.  Any issue caused by the CSS added here is your responsibility to resolve. Blackboard Open LMS Support does not troubleshoot nor provide any help with CSS-related content.';
 $string['customtopbar'] = 'Navigation bar';
 $string['customisenavbar'] = 'Change navigation bar colors';
 $string['customisenavbutton'] = 'Change My Courses button colors';
@@ -100,7 +104,7 @@ $string['deletingassetname'] = 'Deleting {$a->type} "{$a->name}"';
 $string['deletesectionconfirm'] = 'Delete Section';
 $string['deletingsection'] = 'Deleting section "{$a}"';
 $string['draft'] = 'Not published to students';
-$string['dropzonelabel'] = 'Drop files to attach, or <span class="btn-link">browse</span>';
+$string['dropzonelabel'] = 'Drop files to attach, or <span class="fake-link">browse</span>';
 $string['due'] = 'Due {$a}';
 $string['edit'] = 'Edit "{$a}"';
 $string['editcoursecontent'] = 'Edit blocks';
@@ -108,8 +112,12 @@ $string['editcoursesettings'] = 'Course settings';
 $string['editcoursetopic'] = 'Edit section';
 $string['editcustomfooter'] = 'Edit footer';
 $string['editcustommenu'] = 'Edit custom menu';
+$string['error:categorycolorinvalidjson'] = 'Incorrect JSON format for course categories';
+$string['error:categorycolorinvalidvalue'] = 'Record id or color value for category "{$a}" aren\'t valid';
+$string['error:categorynotfound'] = 'The category record with id "{$a}" hasn\'t been found';
 $string['error:coverimageexceedsmaxbytes'] = 'Cover image exceeds the site level maximum allowed file size ({$a})';
 $string['error:coverimageresolutionlow'] = 'For best quality, we recommend a larger image of at least 1024px width.';
+$string['error:duplicatedcategoryids'] = 'Incorrect JSON format, some IDs are duplicated';
 $string['error:failedtochangeassetvisibility'] = 'Failed to hide/show asset';
 $string['error:failedtochangesectionvisibility'] = 'Failed to hide/show section';
 $string['error:failedtohighlightsection'] = 'Failed to highlight section';
@@ -182,8 +190,17 @@ $string['images'] = 'Images';
 $string['instagram'] = 'Instagram';
 $string['instagramdesc'] = 'The url of your instagram account.';
 $string['introduction'] = 'Introduction';
-$string['knowledgebase'] = 'Moodlerooms Knowledge Base';
-$string['lastaccessed'] = '<i class="fa fa-history" aria-hidden="true"></i> Last Accessed'; //Academy Patch M#060
+$string['jsontext'] = 'JSON Text';
+$string['jsontextdescription'] = 'The text area validates the given JSON, so only existing categories are allowed,
+only numerical values as id records (category records) are valid and only hexadecimal values are accepted as colors.
+Here is an example:<br>
+{"1":"#FAAFFF",<br>
+"45":"#AFF",<br>
+"65":"#FFF228",<br>
+"12":"#CC0084",<br>
+"56":"#CC0087",<br>
+"89":"#CCF084"}';
+$string['knowledgebase'] = 'Blackboard Open LMS Knowledge Base';
 $string['list'] = 'List';
 $string['linkedin'] = 'LinkedIn';
 $string['linkedindesc'] = 'The url of your organisation&#8217;s LinkedIn.';
@@ -227,7 +244,6 @@ $string['notattempted'] = 'Not attempted';
 $string['notcontributed'] = 'Not contributed';
 $string['notpublished'] = 'Not published to students';
 $string['notsubmitted'] = 'Not Submitted';
-$string['orderedby'] = '<i class="fa fa-sort" aria-hidden="true"></i> Ordered by'; //Academy Patch M#060
 $string['overdue'] = 'Overdue';
 $string['personalmenu'] = 'Personal menu';
 $string['personalmenufeatures'] = 'Personal menu features';
@@ -237,8 +253,14 @@ $string['pld'] = 'PLD';
 $string['pluginname'] = 'Snap';
 $string['poster'] = 'Cover image';
 $string['posterdesc'] = 'A large header image for the front page of your site. Landscape images (1200 x 600 pixels) or larger work best.';
-$string['poweredbyrunby'] = 'Copyright &#169; Harcourts International Limited.'; // Academy Patch M#060-02
+$string['poweredbyrunby'] = 'Built with <a href="https://www.blackboard.com/blackboard-open-lms" target="_blank">Blackboard Open LMS</a>,
+    a <a href="https://moodle.com/" target="_blank">Moodle</a>-based product.<br>
+    Copyright &#169; {$a} Blackboard Inc., All Rights Reserved.';
 $string['previoussection'] = 'Previous section';
+$string['privacy:metadata:theme_snap_course_favorites:courseid'] = 'The course ID of the course that the user favorited';
+$string['privacy:metadata:theme_snap_course_favorites:userid'] = 'The user ID of the user that favorited the course';
+$string['privacy:metadata:theme_snap_course_favorites:timefavorited'] = 'The timestamp of when the user favorited the course';
+$string['privacy:metadata:theme_snap_course_favorites'] = 'Stores users\' course favorites for Snap';
 $string['problemsfound'] = 'Problems Found';
 $string['progress'] = 'Progress';
 $string['readmore'] = 'Read more&nbsp;»';
@@ -253,20 +275,18 @@ $string['released'] = 'Released: {$a}';
 $string['reopened'] = 'Reopened';
 $string['resourcedisplay'] = 'Resource display';
 $string['resourcedisplayhelp'] = 'Select how attachments and links appear in your course.';
+$string['search'] = 'Search contents';
 $string['seriffont'] = 'Serif font';
 $string['seriffont_desc'] = 'This font is used for most user generated content. Using a serif font makes user generated content more readable, and feel like it is written by a human.';
-$string['shoppingcart'] = 'Shopping Cart'; // Academy Patch M#060
-$string['shoppingcartwindow'] = 'Shopping cart window'; // Academy Patch M#060
 $string['showcoursegradepersonalmenu'] = 'Grades';
 $string['showcoursegradepersonalmenudesc'] = 'Show users their grade in course cards in the personal menu';
-$string['showshoppingcart'] = 'Toggle shopping cart menu'; // Academy Patch M#060
 $string['socialmedia'] = 'Social media';
 $string['submitted'] = 'Submitted';
 $string['sitedescription'] = 'Site description';
 $string['subtitle'] = 'Subtitle';
 $string['subtitle_desc'] = 'Briefly describe your site for users.';
-$string['themecolor'] = 'Site colour';
-$string['themecolordesc'] = 'Bright colours work best and will give your site a modern feel.';
+$string['themecolor'] = 'Site color';
+$string['themecolordesc'] = 'Bright colors work best and will give your site a modern feel.';
 $string['title'] = 'Title';
 $string['top'] = 'Top';
 $string['topbarbgcolor'] = 'Navigation bar color';
@@ -279,7 +299,6 @@ $string['twitterdesc'] = 'The url of your twitter account.';
 $string['unenrolme'] = 'Unenrol me';
 $string['unread'] = 'unread';
 $string['unsupportedcoverimagetype'] = 'Unsupported cover image type ({$a})';
-$string['upcoming'] = 'Upcoming'; //Academy Patch M#060
 $string['via'] = 'via';
 $string['viewcourse'] = 'View Course';
 $string['viewyourprofile'] = 'View your profile';
@@ -289,7 +308,6 @@ $string['viewforumposts'] = 'View my forum posts';
 $string['viewmessaging'] = 'View my messages';
 $string['vieworiginalimage'] = 'View original image';
 $string['visibility'] = 'Visibility';
-$string['warnsiteformatflexpage'] = 'Your site uses Flexpage on the front page. Flexpage is not optimized for small screen devices. It is recommended that you disable the use of Flexpage in your <a href="{$a}">front page settings</a> if you would like your site to be mobile device friendly.';
 $string['xofyanswered'] = '{$a->completed} of {$a->participants} Answered';
 $string['xofyattempted'] = '{$a->completed} of {$a->participants} Attempted';
 $string['xofycontributed'] = '{$a->completed} of {$a->participants} Contributed';
@@ -297,3 +315,28 @@ $string['xofysubmitted'] = '{$a->completed} of {$a->participants} Submitted';
 $string['xungraded'] = '{$a} Ungraded';
 $string['youtube'] = 'YouTube';
 $string['youtubedesc'] = 'The url of your youtube channel.';
+$string['showallsectionsdisabled'] = 'Due to its design language, "Show all sections on one page" isn\'t available in Snap.';
+$string['disabled'] = 'Disabled';
+$string['showappearancedisabled'] = 'Snap\'s design language prevents changes to "Appearance" settings.';
+$string['pbb'] = 'Profile based branding';
+$string['pbb_description'] = 'By enabling <strong>Profile based branding</strong>, you will be able to customize the branding experience for a specific group of users based on the chosen user profile field.
+<ul><li>The user field value will be <em>slugified</em>; converting all characters to lower case and separating them with a dash (-)</li>
+<li>The string <code>snap-pbb-</code> will be prepended</li>
+<li>This class will be added to the <code>body</code> Html tag</li></ul>
+For Example, the user field value <em>Blueberry Extravaganza</em> will be slugified to be <code>snap-pbb-blueberry-extravaganza</code><br /><br />
+This feature is used in conjunction with <a href="https://help.blackboard.com/Blackboard_Open_LMS/Administrator/Manage_a_Site/Course_and_Site_Design/Themes/Snap#advanced-branding_OTP-3" target="_blank">Custom CSS</a>,
+you\'ll need to add CSS selectors using the new classes in the <a class="snap-settings-tab-link" href="#themesnapbranding">Basics</a> section.';
+$string['pbb_enable'] = 'Enable Profile based branding';
+$string['pbb_enable_description'] = 'Only adds the class to the body tag if active.';
+$string['pbb_field'] = 'User field to use';
+$string['pbb_field_description'] = 'This field\'s value will be slugified and used as a CSS class name prepended by <code>snap-pbb-</code>.';
+$string['cachedef_profile_based_branding'] = 'Caching for Profile based branding.';
+$string['cachedef_course_card_bg_image'] = 'Caching for course background image.';
+$string['cachedef_course_card_teacher_avatar'] = 'Caching for teacher avatars.';
+$string['cachedef_course_card_teacher_avatar_index'] = 'Caching for teacher avatars index.';
+$string['accesforumstringdis'] = 'Display options';
+$string['accesforumstringmov'] = 'Move options';
+$string['accescalendarstring'] = 'Calendar';
+$string['admineventwarning'] = 'To see events from all courses, ';
+$string['gotocalendarsnap'] = 'go to site calendar.';
+$string['quizattemptswarn'] = 'Excludes attempts from suspended users';

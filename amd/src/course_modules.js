@@ -15,7 +15,7 @@
  * along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
  *
  * @package   theme_snap
- * @author    Guy Thomas <gthomas@moodlerooms.com>
+ * @author    Guy Thomas <osdev@blackboard.com>
  * @copyright Copyright (c) 2016 Blackboard Inc.
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
@@ -28,9 +28,11 @@ define(
         'jquery',
         'core/ajax',
         'theme_snap/util',
-        'theme_snap/ajax_notification'
+        'theme_snap/ajax_notification',
+        'core/str',
+        'core/event'
     ],
-    function($, ajax, util, ajaxNotify) {
+    function($, ajax, util, ajaxNotify, str, Event) {
 
         /**
          * Module has been completed.
@@ -40,6 +42,7 @@ define(
         var updateModCompletion = function(module, completionhtml) {
             // Update completion tracking icon.
             module.find('.snap-asset-completion-tracking').html(completionhtml);
+            module.find('.btn-link').focus();
             $(document).trigger('snapModuleCompletionChange', module);
         };
 
@@ -92,7 +95,7 @@ define(
          * Reveal page module content.
          *
          * @param {jQuery} pageMod
-         * @param {string} completionhtml - updated completionhtml
+         * @param {string} completionHTML - updated completionHTML
          */
         var revealPageMod = function(pageMod, completionHTML) {
             pageMod.find('.pagemod-content').slideToggle("fast", function() {
@@ -101,8 +104,7 @@ define(
                     pageMod.attr('aria-expanded', 'true');
                     pageMod.find('.pagemod-content').focus();
 
-                }
-                else {
+                } else {
                     pageMod.attr('aria-expanded', 'false');
                     pageMod.focus();
                 }
@@ -153,9 +155,12 @@ define(
                 } else {
                     if (!isexpanded) {
                         // Content is not available so request it.
-                        pageMod.find('.contentafterlink').prepend(
-                            '<div class="ajaxstatus alert alert-info">' + M.str.theme_snap.loading + '</div>'
-                        );
+                        var loadingStrPromise = str.get_string('loading', 'theme_snap');
+                        $.when(loadingStrPromise).done(function(loadingStr) {
+                            pageMod.find('.contentafterlink').prepend(
+                                '<div class="ajaxstatus alert alert-info">' + loadingStr + '</div>'
+                            );
+                        });
                         var getPageUrl = M.cfg.wwwroot + '/theme/snap/rest.php?action=get_page&contextid=' +
                             readmore.data('pagemodcontext');
                         $.ajax({
@@ -172,6 +177,7 @@ define(
                                         pageModContent.data('content-loaded', 1);
                                         pageMod.find('.contentafterlink .ajaxstatus').remove();
                                         revealPageMod(pageMod, data.completionhtml);
+                                        Event.notifyFilterContentUpdated('.pagemod-content');
                                     }
                                 });
                             }
@@ -193,8 +199,8 @@ define(
             /**
              * Ensure lightbox container exists.
              *
-             * @param appendto
-             * @param onclose
+             * @param {string} appendto
+             * @param {function} onclose
              * @returns {*|jQuery|HTMLElement}
              */
             var lightbox = function(appendto, onclose) {
@@ -210,7 +216,7 @@ define(
                         e.preventDefault();
                         e.stopPropagation();
                         lightboxclose();
-                        if (typeof(onclose) === 'function') {
+                        if (typeof (onclose) === 'function') {
                             onclose();
                         }
                     });
@@ -230,9 +236,9 @@ define(
             /**
              * Open lightbox and set content if necessary.
              *
-             * @param content
-             * @param appendto
-             * @param onclose
+             * @param {string} content
+             * @param {*} appendto
+             * @param {function} onclose
              */
             var lightboxopen = function(content, appendto, onclose) {
                 appendto = appendto ? appendto : $('body');
@@ -290,12 +296,12 @@ define(
 
                 // Make lightbox for list display of resources.
                 $(document).on('click', '.js-snap-media .snap-asset-link [href*="/mod/resource/view.php?id="]', function(e) {
-                    lightboxMedia($(this).closest('.snap-resource'));
+                    lightboxMedia($(this).closest('.snap-resource, .snap-extended-resource'));
                     e.preventDefault();
                 });
 
                 // Make resource cards clickable.
-                $(document).on('click', '.snap-resource-card .snap-resource', function(e) {
+                $(document).on('click', '.snap-resource-card .snap-resource, .snap-extended-resource', function(e) {
                     var trigger = $(e.target),
                         hreftarget = '_self',
                         link = $(trigger).closest('.snap-resource').find('.snap-asset-link a'),
@@ -317,6 +323,7 @@ define(
                             if ($(link).attr('target') === '_blank') {
                                 hreftarget = '_blank';
                             }
+                            sessionStorage.setItem('lastMod', $(this).attr('id'));
                             window.open(href, hreftarget);
                         }
                         e.preventDefault();

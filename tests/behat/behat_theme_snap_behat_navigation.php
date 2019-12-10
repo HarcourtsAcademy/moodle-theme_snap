@@ -16,7 +16,7 @@
 
 /**
  * Overrides for behat navigation.
- * @author    Guy Thomas <gthomas@moodlerooms.com>
+ * @author    Guy Thomas <osdev@blackboard.com>
  * @copyright Copyright (c) 2017 Blackboard Inc.
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
@@ -31,7 +31,7 @@ require_once(__DIR__ . '/../../../../lib/tests/behat/behat_navigation.php');
 /**
  * Overrides to make behat navigation work with Snap.
  *
- * @author    Guy Thomas <gthomas@moodlerooms.com>
+ * @author    Guy Thomas <osdev@blackboard.com>
  * @copyright Copyright (c) 2017 Blackboard Inc.
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
@@ -76,6 +76,20 @@ EOF;
         } else {
             $node->click();
         }
+    }
+
+    /**
+     * This find the node we are looking for on the page administration,
+     * the moodle core step doesn't work on snap, so a minor
+     * modification was needed to be compatible with it.
+     */
+    public function i_navigate_to_in_current_page_administration($nodetext) {
+        $parentnodes = array_map('trim', explode('>', $nodetext));
+        // Find the name of the first category of the administration block tree.
+        $node = $this->find('xpath', '//div[@id="settingsnav"]/ul/li[1]/p/span');
+        array_unshift($parentnodes, $node->getText());
+        $lastnode = array_pop($parentnodes);
+        $this->select_node_in_navigation($lastnode, $parentnodes);
     }
 
     protected function select_node_in_navigation($nodetext, $parentnodes) {

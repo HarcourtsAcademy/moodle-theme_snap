@@ -18,7 +18,7 @@
  * Renderer functions shared between multiple renderers.
  *
  * @package   theme_snap
- * @copyright Copyright (c) 2015 Moodlerooms Inc. (http://www.moodlerooms.com)
+ * @copyright Copyright (c) 2015 Blackboard Inc. (http://www.blackboard.com)
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
@@ -143,7 +143,7 @@ class shared extends \renderer_base {
         $json = json_encode($handler->get_js_data());
         $script = <<<EOF
             <script>
-                var theme_snap_course_file_handlers = $json;
+                var themeSnapCourseFileHandlers = $json;
             </script>
 EOF;
 
@@ -277,7 +277,7 @@ EOF;
      * @return void
      */
     public static function page_requires_js() {
-        global $CFG, $PAGE, $COURSE, $USER;
+        global $CFG, $PAGE, $COURSE, $USER, $OUTPUT;
 
         $PAGE->requires->jquery();
         $PAGE->requires->js_amd_inline("require(['theme_boost/loader']);");
@@ -314,7 +314,8 @@ EOF;
             'modhide',
             'modshow',
             'hiddenoncoursepage',
-            'showoncoursepage'
+            'showoncoursepage',
+            'switchrolereturn'
         ], 'moodle');
 
         $PAGE->requires->strings_for_js([
@@ -369,14 +370,20 @@ EOF;
             'enablecompletion' => isloggedin() && $COURSE->enablecompletion
         ];
 
+        $mprocs = get_message_processors(true);
         $forcepwdchange = (bool) get_user_preferences('auth_forcepasswordchange', false);
-        $conversationbadgecountenabled = isloggedin() && !isset($mprocs['badge']) && $PAGE->theme->settings->messagestoggle == 1;
+        $conversationbadgecountenabled = isloggedin() && isset($mprocs['badge']) && $PAGE->theme->settings->messagestoggle == 1;
         $userid = $USER->id;
-        $sitepolicyacceptreqd = isloggedin() && $CFG->sitepolicy && empty($USER->policyagreed) && !is_siteadmin();
+        $manager = new \core_privacy\local\sitepolicy\manager();
+        $policyurlexist = $manager->is_defined();
+        $sitepolicyacceptreqd = isloggedin() && $policyurlexist && empty($USER->policyagreed) && !is_siteadmin();
+        $inalternativerole = $OUTPUT->in_alternative_role();
         $initvars = [$coursevars, $pagehascoursecontent, get_max_upload_file_size($CFG->maxbytes), $forcepwdchange,
-                     $conversationbadgecountenabled, $userid, $sitepolicyacceptreqd];
+                     $conversationbadgecountenabled, $userid, $sitepolicyacceptreqd, $inalternativerole];
         $PAGE->requires->js_call_amd('theme_snap/snap', 'snapInit', $initvars);
-
+        if (!empty($CFG->calendar_adminseesall) && is_siteadmin()) {
+            $PAGE->requires->js_call_amd('theme_snap/adminevents', 'init');
+        }
         // Does the page have editable course content?
         if ($pagehascoursecontent && $PAGE->user_allowed_editing()) {
             $canmanageacts = has_capability('moodle/course:manageactivities', context_course::instance($COURSE->id));
@@ -391,38 +398,6 @@ EOF;
                 $USER->editing = $originaleditstate;
             }
         }
-    }
-
-    /**
-     * Render a warning where flexpage is the course format for the front page.
-     *
-     * @author: Guy Thomas
-     * @date: 2014-07-17
-     * @param bool $adminsonly
-     * @return string
-     */
-    public static function flexpage_frontpage_warning($adminsonly = false) {
-        global $OUTPUT;
-
-        if ($adminsonly) {
-            if (!is_siteadmin()) {
-                // Only for admin users.
-                return '';
-            }
-        }
-
-        // Check to see if the front page course has a format of flexpage.
-        $fpage = get_site();
-        if ($fpage->format != 'flexpage') {
-            // Front page format is not flexpage.
-            return '';
-        }
-
-        $url = new moodle_url('/admin/settings.php', ['section' => 'frontpagesettings']);
-
-        // Output warning.
-        return ($OUTPUT->notification(get_string('warnsiteformatflexpage',
-                'theme_snap', $url->out())));
     }
 
     /**
@@ -494,7 +469,7 @@ EOF;
      * @return string
      */
     public static function appendices() {
-        global $CFG, $COURSE, $PAGE, $OUTPUT;
+        global $CFG, $COURSE, $PAGE, $OUTPUT, $DB;
 
         $links = array();
         $localplugins = core_component::get_plugin_list('local');
@@ -546,22 +521,11 @@ EOF;
             );
         }
 
-        // Norton grader if installed.
         $iconurl = $OUTPUT->image_url('joule_grader', 'theme');
         $gradebookicon = '<img src="'.$iconurl.'" class="svg-icon" alt="" role="presentation">';
-        if (array_key_exists('nortongrader', $localplugins)) {
-            if (has_capability('local/nortongrader:grade', $coursecontext)
-                || has_capability('local/nortongrader:view', $coursecontext)
-            ) {
-                $links[] = array(
-                    'link' => $CFG->wwwroot.'/local/nortongrader/view.php?courseid='.$COURSE->id,
-                    'title' => $gradebookicon.get_string('pluginname', 'local_nortongrader'),
-                );
-            }
-        }
 
         // Joule grader if installed.
-        if (array_key_exists('joulegrader', $localplugins) && !array_key_exists('nortongrader', $localplugins)) {
+        if (array_key_exists('joulegrader', $localplugins)) {
             if (has_capability('local/joulegrader:grade', $coursecontext)
                 || has_capability('local/joulegrader:view', $coursecontext)
             ) {
@@ -584,9 +548,10 @@ EOF;
         }
 
         // Participants.
-        if (has_capability('moodle/course:viewparticipants', $coursecontext)) {
+        if (course_can_view_participants($coursecontext)) {
+
             // Get count of course users.
-            $usercount = count_enrolled_users($coursecontext, '', 0, true);
+            $usercount = \theme_snap\local::count_enrolled_users($coursecontext, '', 0, true);
 
             // Build icon.
             $participanticons = '';
@@ -628,7 +593,7 @@ EOF;
         }
 
         // Personalised Learning Designer.
-        if (array_key_exists('pld', $localplugins) && has_capability('moodle/course:update', $coursecontext)) {
+        if (array_key_exists('pld', $localplugins) && has_capability('local/pld:editcourserules', $coursecontext)) {
             $iconurl = $OUTPUT->image_url('pld', 'theme');
             $pldicon = '<img src="'.$iconurl.'" class="svg-icon" alt="" role="presentation">';
             $pldname = get_string('pld', 'theme_snap');
@@ -694,28 +659,36 @@ EOF;
             }
         }
 
-        /* START Academy Patch M#60 Include link to Course Completion Report. */
-        // Course progress.
-        if ($COURSE->enablecompletion) {
-
-            $canviewcompletion = has_capability('report/completion:view', $coursecontext);
-            if (!is_guest($coursecontext) && $canviewcompletion) {
-                $iconurl = $OUTPUT->image_url('completion', 'theme');
-                $badgesicon = '<img src="'.$iconurl.'" class="svg-icon" alt="" role="presentation">';
+        // Mediasite. (GT Mod - core component check needs to be first in evaluation or capability check error will
+        // occur when the module is not installed).
+        if ( \core_component::get_component_directory('mod_mediasite') !== null &&
+            $COURSE->id > 1 && has_capability('mod/mediasite:courses7', $coursecontext) &&
+            is_callable('mr_on') &&
+            mr_on("mediasite", "_MR_MODULES")) {
+            require_once($CFG->dirroot . "/mod/mediasite/mediasitesite.php");
+            $iconurl = $OUTPUT->image_url('icon', 'mediasite');
+            $badgesicon = '<img src="'.$iconurl.'" class="svg-icon" alt="" role="presentation">';
+            $courseconfig = $DB->get_record('mediasite_course_config', array('course' => $COURSE->id));
+            if (!empty($courseconfig->mediasite_courses_enabled) && $courseconfig->mediasite_site) {
+                $site = new \Sonicfoundry\MediasiteSite($courseconfig->mediasite_site);
+                $url = new moodle_url(
+                    '/mod/mediasite/courses7.php',
+                    array('id' => $COURSE->id, 'siteid' => $courseconfig->mediasite_site)
+                );
                 $links[] = array(
-                    'link' => 'report/completion/index.php?course=' . $COURSE->id,
-                    'title' => $badgesicon.get_string('coursecompletion', 'completion')
+                    'link' => $url->out_as_local_url(false),
+                    'title' => $badgesicon . $site->get_integration_catalog_title()
                 );
             } else {
-                $iconurl = $OUTPUT->image_url('completion', 'theme');
-                $badgesicon = '<img src="'.$iconurl.'" class="svg-icon" alt="" role="presentation">';
-                $links[] = array(
-                    'link' => 'blocks/completionstatus/details.php?course=' . $COURSE->id,
-                    'title' => $badgesicon.get_string('coursecompletion', 'completion')
-                );
+                foreach (get_mediasite_sites(true, false) as $site) {
+                    $url = new moodle_url('/mod/mediasite/courses7.php', array('id' => $COURSE->id, 'siteid' => $site->id));
+                    $links[] = array(
+                        'link' => $url->out_as_local_url(false),
+                        'title' => $badgesicon . $site->integration_catalog_title
+                    );
+                }
             }
         }
-        /* END Academy Patch M#60 */
 
         // Output course tools section.
         $coursetools = get_string('coursetools', 'theme_snap');
@@ -809,10 +782,10 @@ EOF;
 
         // User grade.
         if (has_capability('gradereport/overview:view', $coursecontext)) {
-            $grade = local::course_grade($COURSE);
+            $grade = local::course_grade($COURSE, true);
             $coursegrade = '-';
             if (isset($grade->coursegrade['percentage'])) {
-                $coursegrade = round($grade->coursegrade['percentage']);
+                $coursegrade = current(explode(' ', $grade->coursegrade['percentage']));
             }
 
             $moodleurl = new moodle_url('/grade/report/user/index.php', ['id' => $COURSE->id, 'userid' => $USER->id]);

@@ -16,7 +16,7 @@
 # Tests for html5 file upload direct to course.
 #
 # @package    theme_snap
-# @copyright  Copyright (c) 2016 Moodlerooms Inc. (http://www.moodlerooms.com)
+# @copyright  Copyright (c) 2016 Blackboard Inc. (http://www.blackboard.com)
 # @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
 
 
@@ -53,7 +53,7 @@ Feature: When the moodle theme is set to Snap, teachers can upload files as reso
     And I upload file "testgif.gif" to section 1
     Then I should not see "Add image to course page"
     And I should not see "Create file resource"
-    And I should see "testgif" in the "#section-1 .figure .figure-caption" "css_element"
+    And I should see "testgif" in the "#section-1 .snap-native-image .activityinstance .instancename" "css_element"
 
   @javascript
   Scenario: Student cannot upload file.
