@@ -41,16 +41,16 @@ define(['jquery', 'core/str', 'core/event'],
                     {key : 'viewmessaging', component : 'theme_snap'},
                     {key : 'viewforumposts', component : 'theme_snap'},
                     {key : 'editcoursesettings', component : 'theme_snap'},
-                    {key : 'pluginname', component : 'local_joulegrader'},
-                    {key : 'gradebook', component : 'local_joulegrader'},
+                    {key : 'empty_string', component : 'theme_snap'}, // Academy Patch M#076
+                    {key : 'empty_string', component : 'theme_snap'}, // Academy Patch M#076
                     {key : 'gradebook', component : 'core_grades'},
                     {key : 'numparticipants', component : 'core_message'},
-                    {key : 'joulereports', component : 'block_reports'},
+                    {key : 'empty_string', component : 'theme_snap'}, // Academy Patch M#076
                     {key : 'pld', component : 'theme_snap'},
                     {key : 'competencies', component : 'core_competency'},
-                    {key : 'outcomes', component : 'core_outcome'},
+                    {key : 'empty_string', component : 'theme_snap'}, // Academy Patch M#076
                     {key : 'badges', component : 'core_badges'},
-                    {key : 'coursereport', component : 'report_allylti'}
+                    {key : 'empty_string', component : 'theme_snap'} // Academy Patch M#076
                 ]).done(function(stringsjs) {
                     if ($("#page-mod-forum-discuss")) {
                         $("div[data-content='forum-discussion'] div.singleselect form.form-inline " +
