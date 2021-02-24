@@ -226,6 +226,10 @@ function theme_snap_pluginfile($course, $cm, $context, $filearea, $args, $forced
     ];
 
     if ($context->contextlevel == CONTEXT_SYSTEM && in_array($filearea, $sysfileareas)) {
+        /* START Academy Patch M#077 Stop theme_snap $PAGE->context not set error notices. */
+        global $PAGE;
+        $PAGE->set_context(CONTEXT_SYSTEM);
+        /* END Academy Patch M#077 */
         $theme = theme_config::load('snap');
         return $theme->setting_file_serve($filearea, $args, $forcedownload, $options);
     } else if (in_array($context->contextlevel, $coverimagecontexts)
