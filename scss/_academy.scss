@@ -105,3 +105,17 @@
         font-size: $font-size-root;
     }
 }
+
+/* More whitespace before headings within content. */
+#region-main h2,
+#region-main h3,
+#region-main h4,
+#region-main h5 {
+    padding-top: 1rem;
+    font-weight: bold;
+}
+
+#region-main h5 {
+    font-size: 1.3rem; // same as <p>
+}
+
